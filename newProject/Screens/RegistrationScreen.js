@@ -9,20 +9,44 @@ import {
   Keyboard,
   KeyboardAvoidingView,
   Platform,
+  Image,
 } from "react-native";
 import React, { useState } from "react";
 // import Icon from "react-native-vector-icons/AntDesign";
 import Icon from "react-native-vector-icons/AntDesign";
+import * as ImagePicker from "expo-image-picker";
 
 const RegistrationScreen = () => {
-  const signIn = () => {
-    console.debug("Welcome!");
-  };
-
   const [hidePass, setHidePass] = useState(true);
   const [login, setLogin] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [image, setImage] = useState(null);
+
+  const signIn = () => {
+    console.debug("Welcome!");
+  };
+
+  const addImage = async () => {
+    console.debug("add image");
+    let result = await ImagePicker.launchImageLibraryAsync({
+      allowsEditing: true,
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      let filename = result?.assets[0].uri.substring(
+        result?.assets[0].uri.lastIndexOf("/") + 1,
+        result?.assets[0].uri.length
+      );
+
+      delete result.cancelled;
+      result = {
+        ...result,
+        name: filename,
+      };
+    }
+  };
 
   //   const handleLoginChange = (login) => setLogin(login);
   //   const handleEmailChange = (email) => setLogin(email);
@@ -38,6 +62,7 @@ const RegistrationScreen = () => {
         >
           <View style={styles.containerRegisterForm}>
             <View style={styles.inputBox}>
+              <View></View>
               <Text style={styles.title}>Реєстрація</Text>
               <KeyboardAvoidingView
                 behavior={Platform.OS == "ios" ? "padding" : "height"}
@@ -91,10 +116,16 @@ const RegistrationScreen = () => {
             </View>
           </View>
           <View style={styles.loadPhoto}>
-            <View style={styles.addIcon}>
+            <TouchableOpacity style={styles.addIcon} onPress={addImage}>
               {/* <Icon name="close" color="#FF6C00" size={20} /> */}
               <Icon name="plus" color="#FF6C00" size={20} />
-            </View>
+            </TouchableOpacity>
+            {image && (
+              <Image
+                source={{ uri: image }}
+                style={{ width: 120, height: 120 }}
+              />
+            )}
           </View>
         </ImageBackground>
       </View>
