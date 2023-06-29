@@ -13,7 +13,7 @@ import {
 } from "react-native";
 import { useState } from "react";
 
-const LoginScreen = () => {
+const LoginScreen = ({navigation}) => {
   const [hidePass, setHidePass] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -63,7 +63,7 @@ const LoginScreen = () => {
                   style={styles.textLookPassword}
                   onPress={() => setHidePass(!hidePass)}
                 >
-                  Показати
+                  {hidePass ? "Показати" : "Заховати"}
                 </Text>
               </View>
 
@@ -72,7 +72,17 @@ const LoginScreen = () => {
                   Увійти
                 </Text>
               </TouchableOpacity>
-              <Text style={styles.text}>Немає акаунту? Зареєструватися</Text>
+
+              <TouchableOpacity
+                onPress={() => navigation.navigate("Registration")}
+              >
+                <Text style={styles.text}>
+                  Немає акаунту?{" "}
+                  <Text style={styles.textButtonToRegister}>
+                    Зареєструватися
+                  </Text>{" "}
+                </Text>
+              </TouchableOpacity>
             </View>
           </View>
         </ImageBackground>
@@ -126,6 +136,13 @@ const styles = StyleSheet.create({
   text: {
     textAlign: "center",
     marginTop: 16,
+    color: "#1B4371",
+    fontWeight: "bold",
+  },
+  textButtonToRegister: {
+    textDecorationLine: "underline",
+    textDecorationStyle: "solid",
+    textDecorationColor: "#1B4371",
   },
   loadPhoto: {
     position: "absolute",
