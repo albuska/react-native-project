@@ -13,8 +13,9 @@ const CreateTabNav = () => {
       <MainTab.Navigator
         screenOptions={{
           tabBarShowLabel: false,
-         
-          tabBarIcon: ({ focused, size, color }) =>  <Feather name="log-out" size={24} color="black" /> 
+          headerRight: (props) => (
+            <Feather name="log-out" size={24} color="#BDBDBD" style={{marginRight: 10}} />
+          ),
         }}
       >
         <MainTab.Screen
@@ -30,14 +31,12 @@ const CreateTabNav = () => {
                   backgroundColor={focused ? "#FF6C00" : "transparent"}
                   paddingHorizontal={focused ? 25 : null}
                   paddingVertical={focused ? 13 : null}
-                  style={
-                    ({
-                      borderTopLeftRadius: 100,
-                      borderTopRightRadius: 100,
-                      borderBottomLeftRadius: 100,
-                      borderBottomRightRadius: 100
-                    })
-                  }
+                  style={{
+                    borderTopLeftRadius: 100,
+                    borderTopRightRadius: 100,
+                    borderBottomLeftRadius: 100,
+                    borderBottomRightRadius: 100,
+                  }}
                 />
               );
             },
