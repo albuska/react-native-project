@@ -13,9 +13,7 @@ const CreateTabNav = () => {
       <MainTab.Navigator
         screenOptions={{
           tabBarShowLabel: false,
-          headerRight: (props) => (
-            <Feather name="log-out" size={24} color="#BDBDBD" style={{marginRight: 10}} />
-          ),
+          headerTitleAlign: "center",
         }}
       >
         <MainTab.Screen
@@ -40,6 +38,14 @@ const CreateTabNav = () => {
                 />
               );
             },
+            headerRight: (props) => (
+              <Feather
+                name="log-out"
+                size={24}
+                color="#BDBDBD"
+                style={{ marginRight: 10 }}
+              />
+            ),
           }}
         />
         <MainTab.Screen
@@ -88,6 +94,14 @@ const CreateTabNav = () => {
                 />
               );
             },
+            headerLeft: (props) => (
+              <Feather
+                name="arrow-left"
+                size={24}
+                color="#BDBDBD"
+                style={{ marginLeft: 10 }}
+              />
+            ),
           }}
         />
       </MainTab.Navigator>
