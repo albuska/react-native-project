@@ -4,10 +4,11 @@ import * as SplashScreen from "expo-splash-screen";
 import { useFonts } from "expo-font";
 import { useCallback } from "react";
 import { Dimensions, View } from "react-native";
-import CreateAuthNav from "./components/CreateAuthNav";
-import CreateTabNav from "./components/CreateTabNav";
+import useRoute from "./utils/router";
 
 export default function App() {
+  const routing = useRoute({});
+
   const [fontsLoaded] = useFonts({
     Agdasima: require("./assets/fonts/Agdasima-Regular.ttf"),
     Roboto: require("./assets/fonts/Roboto-BoldItalic.ttf"),
@@ -25,8 +26,7 @@ export default function App() {
 
   return (
     <NavigationContainer onLayout={onLayoutRootView}>
-      {/* <CreateAuthNav /> */}
-      <CreateTabNav />
+      {routing}
     </NavigationContainer>
   );
 }
