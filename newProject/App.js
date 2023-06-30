@@ -7,7 +7,7 @@ import { Dimensions, View } from "react-native";
 import useRoute from "./utils/router";
 
 export default function App() {
-  const routing = useRoute({});
+  const routing = useRoute(null);
 
   const [fontsLoaded] = useFonts({
     Agdasima: require("./assets/fonts/Agdasima-Regular.ttf"),

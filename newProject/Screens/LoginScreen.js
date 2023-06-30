@@ -17,9 +17,16 @@ const LoginScreen = ({navigation}) => {
   const [hidePass, setHidePass] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+   const [isLogin, setIsLogin] = useState(false);
 
   const onLogin = () => {
+    setIsLogin(true);
+    navigation.navigate("Posts");
+
     Alert.alert("You are welcome!");
+
+    setEmail("");
+    setPassword("");
   };
 
   return (

@@ -26,6 +26,7 @@ const RegistrationScreen = ({ navigation }) => {
   const [isFocused, setIsFocused] = useState(false);
   const [borderColor, setBorderColor] = useState("#E8E8E8");
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
+  const [isLogin, setIsLogin] = useState(false);
 
   const handleFocus = () => {
     // switch (value) {
@@ -71,6 +72,9 @@ const RegistrationScreen = ({ navigation }) => {
   };
 
   const signIn = () => {
+    setIsLogin(true); 
+    navigation.navigate("Posts");
+
     console.debug("Welcome!");
     setLogin("");
     setEmail("");
@@ -157,8 +161,16 @@ const RegistrationScreen = ({ navigation }) => {
                 {hidePass ? "Показати" : "Заховати"}
               </Text>
             </View>
-            <TouchableOpacity style={styles.button} onPress={signIn}>
-              <Text style={styles.textButton}>Зареєструватися</Text>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={signIn}
+            >
+              <Text
+                style={styles.textButton}
+                // onPress={() => navigation.navigate("Posts")}
+              >
+                Зареєструватися
+              </Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => navigation.navigate("Login")}>
               <Text style={styles.text}>Уже є аккаунт? Увійти</Text>
