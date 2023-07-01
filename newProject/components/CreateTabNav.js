@@ -3,7 +3,6 @@ import PostsScreen from "../pages/PostsScreen";
 import ProfileScreen from "../pages/ProfileScreen";
 import CreatePostsScreen from "../pages/CreatePostsScreen";
 import { Feather } from "@expo/vector-icons";
-import { View } from "react-native";
 
 const MainTab = createBottomTabNavigator();
 
@@ -49,8 +48,8 @@ const CreateTabNav = () => {
           }}
         />
         <MainTab.Screen
-          name="Profile"
-          component={ProfileScreen}
+          name="CreatePosts"
+          component={CreatePostsScreen}
           options={{
             tabBarIcon: ({ focused, size, color }) => {
               return (
@@ -73,8 +72,8 @@ const CreateTabNav = () => {
           }}
         />
         <MainTab.Screen
-          name="CreatePosts"
-          component={CreatePostsScreen}
+          name="Profile"
+          component={ProfileScreen}
           options={{
             tabBarIcon: ({ focused, size, color }) => {
               return (
