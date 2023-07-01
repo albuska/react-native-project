@@ -69,6 +69,14 @@ const CreateTabNav = () => {
                 />
               );
             },
+            headerLeft: (props) => (
+              <Feather
+                name="arrow-left"
+                size={24}
+                color="#BDBDBD"
+                style={{ marginLeft: 10 }}
+              />
+            ),
           }}
         />
         <MainTab.Screen
@@ -93,14 +101,6 @@ const CreateTabNav = () => {
                 />
               );
             },
-            headerLeft: (props) => (
-              <Feather
-                name="arrow-left"
-                size={24}
-                color="#BDBDBD"
-                style={{ marginLeft: 10 }}
-              />
-            ),
           }}
         />
       </MainTab.Navigator>

@@ -167,7 +167,6 @@ const RegistrationScreen = ({ navigation }) => {
             >
               <Text
                 style={styles.textButton}
-                // onPress={() => navigation.navigate("Posts")}
               >
                 Зареєструватися
               </Text>
