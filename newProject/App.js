@@ -1,5 +1,7 @@
 import "react-native-gesture-handler";
 import { NavigationContainer } from "@react-navigation/native";
+import "react-native-url-polyfill/auto";
+import "react-native-get-random-values";
 import * as SplashScreen from "expo-splash-screen";
 import { useFonts } from "expo-font";
 import { useCallback } from "react";
@@ -10,8 +12,9 @@ export default function App() {
   const routing = useRoute({});
 
   const [fontsLoaded] = useFonts({
-    Agdasima: require("./assets/fonts/Agdasima-Regular.ttf"),
-    Roboto: require("./assets/fonts/Roboto-BoldItalic.ttf"),
+    "Agdasima": require("./assets/fonts/Agdasima-Regular.ttf"),
+    "Roboto": require("./assets/fonts/Roboto-BoldItalic.ttf"),
+    "RobotoBold": require("./assets/fonts/Roboto-Bold.ttf"),
   });
 
   const onLayoutRootView = useCallback(async () => {

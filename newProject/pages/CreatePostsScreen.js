@@ -1,5 +1,6 @@
 import { Fontisto, Feather } from "@expo/vector-icons";
 import * as MediaLibrary from "expo-media-library";
+import { nanoid } from "nanoid";
 import {
   View,
   StyleSheet,
@@ -15,31 +16,52 @@ import { Camera, CameraType } from "expo-camera";
 import { useState, useEffect } from "react";
 
 const CreatePostsScreen = ({ navigation }) => {
+  const [hasPermission, setHasPermission] = useState(null);
   const [name, setName] = useState("");
   const [location, setLocation] = useState("");
   const [cameraRef, setCameraRef] = useState(null);
-  const [photo, setPhoto] = useState("");
-  const [type, setType] = useState(null);
+  const [photo, setPhoto] = useState(null);
+  const [type, setType] = useState(Camera.Constants.Type.back);
+
+  useEffect(() => {
+    (async () => {
+      const { status } = await Camera.requestCameraPermissionsAsync();
+      await MediaLibrary.requestPermissionsAsync();
+
+      setHasPermission(status === "granted");
+    })();
+  }, []);
+
+  if (hasPermission === null) {
+    return <View />;
+  }
+  if (hasPermission === false) {
+    return <Text>No access to camera</Text>;
+  }
 
   const takePhoto = async () => {
     const photo = await cameraRef.takePictureAsync();
+    const asset = await MediaLibrary.createAssetAsync(photo);
     setPhoto(photo.uri);
   };
 
   const sendPost = () => {
     const post = {
+      id: nanoid(),
       photo,
       name,
       location,
     };
     navigation.navigate("Posts", post);
+    setName("");
+    setLocation("");
   };
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.container}>
         <View style={styles.containerCamera}>
-          <Camera style={styles.camera} ref={setCameraRef}>
+          <Camera style={styles.camera} ref={setCameraRef} type={type}>
             {photo && (
               <View style={styles.containerImage}>
                 <Image
@@ -78,7 +100,7 @@ const CreatePostsScreen = ({ navigation }) => {
                 required
                 value={name}
                 onChangeText={setName}
-                style={{ width: "100%"}}
+                style={{ width: "100%" }}
               />
             </View>
             <View style={styles.input}>
@@ -93,7 +115,7 @@ const CreatePostsScreen = ({ navigation }) => {
                 onChangeText={setLocation}
                 placeholder="Місцевість..."
                 required
-                style={{ width: "100%"}}
+                style={{ width: "100%" }}
               />
             </View>
             <TouchableOpacity
@@ -131,7 +153,7 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   camera: {
-    height: "40%",
+    height: 240,
     alignItems: "center",
     justifyContent: "center",
     borderRadius: 8,
@@ -147,17 +169,14 @@ const styles = StyleSheet.create({
   },
   containerImage: {
     position: "absolute",
-    top: 0,
-    left: 85,
+    top: 3,
+    left: 3,
     borderColor: "#FFFFFF",
     borderWidth: 1,
     borderRadius: 10,
   },
   containerLoadImage: {
     marginTop: 8,
-  },
-  form: {
-    // marginVertical: 20,
   },
   input: {
     borderBottomWidth: 1,
