@@ -77,7 +77,7 @@ const CreateTabNav = () => {
                 style={{ marginLeft: 10 }}
               />
             ),
-            // unmountOnBlur: true,
+            unmountOnBlur: true,
           }}
         />
         <MainTab.Screen
