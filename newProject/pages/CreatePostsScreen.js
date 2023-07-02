@@ -26,22 +26,22 @@ const CreatePostsScreen = ({ navigation }) => {
   useEffect(() => {
     (async () => {
       const { status } = await Camera.requestCameraPermissionsAsync();
-      // await MediaLibrary.requestPermissionsAsync();
+      await MediaLibrary.requestPermissionsAsync();
 
       setHasPermission(status === "granted");
     })();
   }, []);
 
-  // if (hasPermission === null) {
-  //   return <View />;
-  // }
-  // if (hasPermission === false) {
-  //   return <Text>No access to camera</Text>;
-  // }
+  if (hasPermission === null) {
+    return <View />;
+  }
+  if (hasPermission === false) {
+    return <Text>No access to camera</Text>;
+  }
 
   const takePhoto = async () => {
     const { uri } = await cameraRef.takePictureAsync();
-    // await MediaLibrary.createAssetAsync(uri);
+    await MediaLibrary.createAssetAsync(uri);
     setPhoto(uri);
   };
 
