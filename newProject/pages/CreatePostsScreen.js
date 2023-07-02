@@ -1,4 +1,4 @@
-import { Fontisto, Feather } from "@expo/vector-icons";
+import { Fontisto, Feather, Ionicons } from "@expo/vector-icons";
 import * as MediaLibrary from "expo-media-library";
 import { nanoid } from "nanoid";
 import {
@@ -26,33 +26,33 @@ const CreatePostsScreen = ({ navigation }) => {
   useEffect(() => {
     (async () => {
       const { status } = await Camera.requestCameraPermissionsAsync();
-      await MediaLibrary.requestPermissionsAsync();
+      // await MediaLibrary.requestPermissionsAsync();
 
       setHasPermission(status === "granted");
     })();
   }, []);
 
-  if (hasPermission === null) {
-    return <View />;
-  }
-  if (hasPermission === false) {
-    return <Text>No access to camera</Text>;
-  }
+  // if (hasPermission === null) {
+  //   return <View />;
+  // }
+  // if (hasPermission === false) {
+  //   return <Text>No access to camera</Text>;
+  // }
 
   const takePhoto = async () => {
-    const photo = await cameraRef.takePictureAsync();
-    const asset = await MediaLibrary.createAssetAsync(photo);
-    setPhoto(photo.uri);
+    const { uri } = await cameraRef.takePictureAsync();
+    // await MediaLibrary.createAssetAsync(uri);
+    setPhoto(uri);
   };
 
   const sendPost = () => {
-    const post = {
-      id: nanoid(),
-      photo,
-      name,
-      location,
-    };
-    navigation.navigate("Posts", post);
+    navigation.navigate("Posts", { id: nanoid(), photo, name, location });
+
+    setName("");
+    setLocation("");
+  };
+
+  const deletePost = () => {
     setName("");
     setLocation("");
   };
@@ -62,14 +62,15 @@ const CreatePostsScreen = ({ navigation }) => {
       <View style={styles.container}>
         <View style={styles.containerCamera}>
           <Camera style={styles.camera} ref={setCameraRef} type={type}>
-            {photo && (
-              <View style={styles.containerImage}>
+            <View style={styles.containerImage}>
+              {photo && (
                 <Image
                   source={{ uri: photo }}
                   style={{ width: 100, height: 100, borderRadius: 10 }}
                 />
-              </View>
-            )}
+              )}
+            </View>
+
             <TouchableOpacity
               style={{
                 ...styles.containerSnap,
@@ -84,6 +85,19 @@ const CreatePostsScreen = ({ navigation }) => {
                 size={24}
                 color={photo ? "#FFFFFF" : "#BDBDBD"}
               />
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.containerToggleTypeCamera}
+              onPress={() => {
+                setType(
+                  type === Camera.Constants.Type.back
+                    ? Camera.Constants.Type.front
+                    : Camera.Constants.Type.back
+                );
+              }}
+            >
+              <Ionicons name="md-camera-reverse" size={24} color="#FFFFFF" />
             </TouchableOpacity>
           </Camera>
           <View style={styles.containerLoadImage}>
@@ -131,9 +145,9 @@ const CreatePostsScreen = ({ navigation }) => {
           </View>
         </View>
         <View style={{ alignItems: "center" }}>
-          <View style={styles.bgIcon}>
+          <TouchableOpacity style={styles.bgIcon} onPress={deletePost}>
             <Feather name="trash-2" size={24} color="#ffffff" />
-          </View>
+          </TouchableOpacity>
         </View>
       </View>
     </TouchableWithoutFeedback>
@@ -166,6 +180,11 @@ const styles = StyleSheet.create({
     height: 60,
     justifyContent: "center",
     alignItems: "center",
+  },
+  containerToggleTypeCamera: {
+    position: "absolute",
+    bottom: 8,
+    right: 8,
   },
   containerImage: {
     position: "absolute",
