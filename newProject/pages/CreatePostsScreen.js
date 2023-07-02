@@ -10,9 +10,8 @@ import {
   TextInput,
   TouchableWithoutFeedback,
   Keyboard,
-  KeyboardAvoidingView,
 } from "react-native";
-import { Camera, CameraType } from "expo-camera";
+import { Camera } from "expo-camera";
 import { useState, useEffect } from "react";
 
 const CreatePostsScreen = ({ navigation }) => {
@@ -22,7 +21,6 @@ const CreatePostsScreen = ({ navigation }) => {
   const [cameraRef, setCameraRef] = useState(null);
   const [photo, setPhoto] = useState(null);
   const [type, setType] = useState(Camera.Constants.Type.back);
-  const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -32,13 +30,6 @@ const CreatePostsScreen = ({ navigation }) => {
       setHasPermission(status === "granted");
     })();
   }, []);
-
-  if (hasPermission === null) {
-    return <View />;
-  }
-  if (hasPermission === false) {
-    return <Text>No access to camera</Text>;
-  }
 
   const takePhoto = async () => {
     const { uri } = await cameraRef.takePictureAsync();
@@ -62,45 +53,45 @@ const CreatePostsScreen = ({ navigation }) => {
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.container}>
         <View style={styles.containerCamera}>
-            <Camera style={styles.camera} ref={setCameraRef} type={type}>
-              <View style={styles.containerImage}>
-                {photo && (
-                  <Image
-                    source={{ uri: photo }}
-                    style={{ width: 100, height: 100, borderRadius: 10 }}
-                  />
-                )}
-              </View>
-
-              <TouchableOpacity
-                style={{
-                  ...styles.containerSnap,
-                  backgroundColor: photo
-                    ? "rgba(255, 255, 255, 0.30)"
-                    : "#FFFFFF",
-                }}
-                onPress={takePhoto}
-              >
-                <Fontisto
-                  name="camera"
-                  size={24}
-                  color={photo ? "#FFFFFF" : "#BDBDBD"}
+          <Camera style={styles.camera} ref={setCameraRef} type={type}>
+            <View style={styles.containerImage}>
+              {photo && (
+                <Image
+                  source={{ uri: photo }}
+                  style={{ width: 100, height: 100, borderRadius: 10 }}
                 />
-              </TouchableOpacity>
+              )}
+            </View>
 
-              <TouchableOpacity
-                style={styles.containerToggleTypeCamera}
-                onPress={() => {
-                  setType(
-                    type === Camera.Constants.Type.back
-                      ? Camera.Constants.Type.front
-                      : Camera.Constants.Type.back
-                  );
-                }}
-              >
-                <Ionicons name="md-camera-reverse" size={24} color="#FFFFFF" />
-              </TouchableOpacity>
-            </Camera>
+            <TouchableOpacity
+              style={{
+                ...styles.containerSnap,
+                backgroundColor: photo
+                  ? "rgba(255, 255, 255, 0.30)"
+                  : "#FFFFFF",
+              }}
+              onPress={takePhoto}
+            >
+              <Fontisto
+                name="camera"
+                size={24}
+                color={photo ? "#FFFFFF" : "#BDBDBD"}
+              />
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.containerToggleTypeCamera}
+              onPress={() => {
+                setType(
+                  type === Camera.Constants.Type.back
+                    ? Camera.Constants.Type.front
+                    : Camera.Constants.Type.back
+                );
+              }}
+            >
+              <Ionicons name="md-camera-reverse" size={24} color="#FFFFFF" />
+            </TouchableOpacity>
+          </Camera>
           <View style={styles.containerLoadImage}>
             <TouchableOpacity>
               <Text style={{ color: "#BDBDBD", marginBottom: 20 }}>

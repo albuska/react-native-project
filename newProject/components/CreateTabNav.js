@@ -13,7 +13,6 @@ const CreateTabNav = () => {
         screenOptions={{
           tabBarShowLabel: false,
           headerTitleAlign: "center",
-          unmountOnBlur: true,
         }}
       >
         <MainTab.Screen
@@ -78,7 +77,7 @@ const CreateTabNav = () => {
                 style={{ marginLeft: 10 }}
               />
             ),
-            // unmountOnBlur: true,
+            unmountOnBlur: true,
           }}
         />
         <MainTab.Screen
