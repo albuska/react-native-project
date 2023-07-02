@@ -6,8 +6,9 @@ const PostsScreen = ({ route, navigation }) => {
   const [posts, setPosts] = useState([]);
 
   useEffect(() => {
+
     if (route.params) {
-      setPosts((prevState) => [...prevState, route.params]);
+    setPosts((prevState) => [...prevState, route.params]);
     }
   }, [route.params]);
   console.log(posts);
@@ -20,7 +21,13 @@ const PostsScreen = ({ route, navigation }) => {
           <View style={styles.card}>
             <Image style={styles.image} source={{ uri: item.photo }} />
             <Text style={styles.title}>{item.name}</Text>
-            <View style={{ flex: 1, flexDirection: "row", justifyContent: "space-between" }}>
+            <View
+              style={{
+                flex: 1,
+                flexDirection: "row",
+                justifyContent: "space-between",
+              }}
+            >
               <View style={{ flexDirection: "row" }}>
                 <Feather
                   name="message-circle"
