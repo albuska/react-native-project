@@ -6,9 +6,13 @@ const PostsScreen = ({ route, navigation }) => {
   const [posts, setPosts] = useState([]);
 
   useEffect(() => {
-    if (route.params) {
-      setPosts((prevState) => [...prevState, route.params]);
-    } 
+   try {
+     if (route.params) {
+       setPosts((prevState) => [...prevState, route.params]);
+     } 
+   } catch (error) {
+    console.log(error.message)
+   }
   }, [route.params]);
 
   return (

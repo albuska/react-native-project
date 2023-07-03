@@ -10,9 +10,11 @@ import {
   TextInput,
   TouchableWithoutFeedback,
   Keyboard,
+  ImageBackground,
 } from "react-native";
 import { Camera } from "expo-camera";
 import { useState, useEffect } from "react";
+import * as ImagePicker from "expo-image-picker";
 
 const CreatePostsScreen = ({ navigation }) => {
   const [hasPermission, setHasPermission] = useState(null);
@@ -21,6 +23,7 @@ const CreatePostsScreen = ({ navigation }) => {
   const [cameraRef, setCameraRef] = useState(null);
   const [photo, setPhoto] = useState(null);
   const [type, setType] = useState(Camera.Constants.Type.back);
+  const [image, setImage] = useState(null);
 
   useEffect(() => {
     (async () => {
@@ -31,21 +34,47 @@ const CreatePostsScreen = ({ navigation }) => {
     })();
   }, []);
 
-  if (hasPermission === null) {
-    return <View />;
-  }
-  if (hasPermission === false) {
-    return <Text>No access to camera</Text>;
-  }
+  // if (hasPermission === null) {
+  //   return <View />;
+  // }
+  // if (hasPermission === false) {
+  //   return <Text>No access to camera</Text>;
+  // }
+
+  const addImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      setImage(result.assets[0].uri);
+    }
+  };
+
+  const closeImage = () => {
+    setImage(null);
+  };
 
   const takePhoto = async () => {
-    const { uri } = await cameraRef.takePictureAsync();
-    await MediaLibrary.createAssetAsync(uri);
-    setPhoto(uri);
+    try {
+      const { uri } = await cameraRef.takePictureAsync();
+      await MediaLibrary.createAssetAsync(uri);
+      setPhoto(uri);
+    } catch (error) {
+      console.log(error.message);
+    }
   };
 
   const sendPost = () => {
-    navigation.navigate("Posts", { id: nanoid(), photo, name, location });
+    navigation.navigate("Posts", {
+      id: nanoid(),
+      photo: photo || image,
+      name,
+      location,
+    });
 
     setName("");
     setLocation("");
@@ -54,6 +83,7 @@ const CreatePostsScreen = ({ navigation }) => {
   const deletePost = () => {
     setName("");
     setLocation("");
+    setImage(null);
   };
 
   return (
@@ -61,47 +91,62 @@ const CreatePostsScreen = ({ navigation }) => {
       <View style={styles.container}>
         <View style={styles.containerCamera}>
           <Camera style={styles.camera} ref={setCameraRef} type={type}>
-            <TouchableOpacity
-              style={{
-                ...styles.containerSnap,
-                backgroundColor: photo
-                  ? "rgba(255, 255, 255, 0.30)"
-                  : "#FFFFFF",
-              }}
-              onPress={takePhoto}
-            >
-              <Fontisto
-                name="camera"
-                size={24}
-                color={photo ? "#FFFFFF" : "#BDBDBD"}
-              />
-            </TouchableOpacity>
+            <View style={styles.containerImage}>
+              {photo && (
+                <Image
+                  source={{ uri: photo }}
+                  style={{ width: 100, height: 100, borderRadius: 10 }}
+                />
+              )}
+            </View>
 
-            <TouchableOpacity
-              style={styles.containerToggleTypeCamera}
-              onPress={() => {
-                setType(
-                  type === Camera.Constants.Type.back
-                    ? Camera.Constants.Type.front
-                    : Camera.Constants.Type.back
-                );
-              }}
-            >
-              <Ionicons name="md-camera-reverse" size={24} color="#FFFFFF" />
-            </TouchableOpacity>
-          </Camera>
-          <View style={styles.containerImage}>
-            {photo && (
-              <Image
-                source={{ uri: photo }}
-                style={{ width: 100, height: 100, borderRadius: 10 }}
-              />
+            {!image && (
+              <TouchableOpacity
+                style={{
+                  ...styles.containerSnap,
+                  backgroundColor: photo
+                    ? "rgba(255, 255, 255, 0.30)"
+                    : "#FFFFFF",
+                }}
+                onPress={takePhoto}
+              >
+                <Fontisto
+                  name="camera"
+                  size={24}
+                  color={photo ? "#FFFFFF" : "#BDBDBD"}
+                />
+              </TouchableOpacity>
             )}
-          </View>
+
+            {!image && (
+              <TouchableOpacity
+                style={styles.containerToggleTypeCamera}
+                onPress={() => {
+                  setType(
+                    type === Camera.Constants.Type.back
+                      ? Camera.Constants.Type.front
+                      : Camera.Constants.Type.back
+                  );
+                }}
+              >
+                <Ionicons name="md-camera-reverse" size={24} color="#FFFFFF" />
+              </TouchableOpacity>
+            )}
+          </Camera>
+          {image && (
+            <ImageBackground
+              source={{ uri: image }}
+              style={{
+                width: "100%",
+                height: "66%",
+                position: "absolute",
+              }}
+            ></ImageBackground>
+          )}
           <View style={styles.containerLoadImage}>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={!image ? addImage : closeImage}>
               <Text style={{ color: "#BDBDBD", marginBottom: 20 }}>
-                {photo ? "Редагувати фото" : "Завантажте фото"}
+                {photo || image ? "Редагувати фото" : "Завантажте фото"}
               </Text>
             </TouchableOpacity>
           </View>
@@ -134,7 +179,7 @@ const CreatePostsScreen = ({ navigation }) => {
               style={{
                 ...styles.button,
                 backgroundColor:
-                  photo && name && location ? "#FF6C00" : "#BDBDBD",
+                  photo || (image && name && location) ? "#FF6C00" : "#BDBDBD",
               }}
               onPress={sendPost}
             >
