@@ -6,19 +6,20 @@ const PostsScreen = ({ route, navigation }) => {
   const [posts, setPosts] = useState([]);
 
   useEffect(() => {
-   try {
-     if (route.params) {
-       setPosts((prevState) => [...prevState, route.params]);
-     } 
-   } catch (error) {
-    console.log(error.message)
-   }
+    try {
+      if (route.params) {
+        setPosts((prevState) => [...prevState, route.params]);
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
   }, [route.params]);
 
   return (
     <View style={styles.container}>
       <FlatList
         data={posts}
+        keyExtractor={(_, index) => index.toString()}
         renderItem={({ item }) => (
           <View style={styles.card}>
             <Image style={styles.image} source={{ uri: item.photo }} />
@@ -58,7 +59,6 @@ const PostsScreen = ({ route, navigation }) => {
             </View>
           </View>
         )}
-        keyExtractor={(item) => item.id}
       />
     </View>
   );

@@ -1,6 +1,5 @@
 import { Fontisto, Feather, Ionicons } from "@expo/vector-icons";
 import * as MediaLibrary from "expo-media-library";
-import { nanoid } from "nanoid";
 import {
   View,
   StyleSheet,
@@ -15,6 +14,7 @@ import {
 import { Camera } from "expo-camera";
 import { useState, useEffect } from "react";
 import * as ImagePicker from "expo-image-picker";
+import * as Location from "expo-location";
 
 const CreatePostsScreen = ({ navigation }) => {
   const [hasPermission, setHasPermission] = useState(null);
@@ -24,6 +24,8 @@ const CreatePostsScreen = ({ navigation }) => {
   const [photo, setPhoto] = useState(null);
   const [type, setType] = useState(Camera.Constants.Type.back);
   const [image, setImage] = useState(null);
+  const [geolocation, setGeoLocation] = useState(null);
+  const [errorMsg, setErrorMsg] = useState(null);
 
   useEffect(() => {
     (async () => {
@@ -40,6 +42,23 @@ const CreatePostsScreen = ({ navigation }) => {
   // if (hasPermission === false) {
   //   return <Text>No access to camera</Text>;
   // }
+
+  // useEffect(() => {
+  //   (async () => {
+  //     let { status } = await Location.requestForegroundPermissionsAsync();
+  //     if (status !== "granted") {
+  //       console.log("Permission to access location was denied");
+  //     }
+
+  //     let location = await Location.getCurrentPositionAsync({});
+  //     console.log(location);
+  //     const coords = {
+  //       latitude: location.coords.latitude,
+  //       longitude: location.coords.longitude,
+  //     };
+  //     setGeoLocation(coords);
+  //   })();
+  // }, []);
 
   const addImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -70,7 +89,6 @@ const CreatePostsScreen = ({ navigation }) => {
 
   const sendPost = () => {
     navigation.navigate("Posts", {
-      id: nanoid(),
       photo: photo || image,
       name,
       location,
