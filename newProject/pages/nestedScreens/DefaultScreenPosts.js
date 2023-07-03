@@ -2,7 +2,7 @@ import { Feather } from "@expo/vector-icons";
 import { useEffect, useState } from "react";
 import { View, Text, StyleSheet, Image, FlatList } from "react-native";
 
-const PostsScreen = ({ route, navigation }) => {
+const DefaultScreenPosts = ({ route, navigation }) => {
   const [posts, setPosts] = useState([]);
 
   useEffect(() => {
@@ -37,13 +37,19 @@ const PostsScreen = ({ route, navigation }) => {
                   size={24}
                   color="#BDBDBD"
                   style={{ transform: [{ rotate: "-90deg" }] }}
+                  onPress={() => navigation.navigate("Comments")}
                 />
                 <Text style={{ color: "#BDBDBD", fontSize: 16, marginLeft: 8 }}>
                   0
                 </Text>
               </View>
               <View style={{ flexDirection: "row" }}>
-                <Feather name="map-pin" size={24} color="#BDBDBD" />
+                <Feather
+                  name="map-pin"
+                  size={24}
+                  color="#BDBDBD"
+                  onPress={() => navigation.navigate("Map", {})}
+                />
                 <Text
                   style={{
                     textDecorationLine: "underline",
@@ -88,4 +94,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default PostsScreen;
+export default DefaultScreenPosts;

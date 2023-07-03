@@ -27,6 +27,33 @@ const CreatePostsScreen = ({ navigation }) => {
   const [geolocation, setGeoLocation] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
 
+    useEffect(() => {
+      (async () => {
+        let { status } = await Location.requestForegroundPermissionsAsync();
+        if (status !== "granted") {
+          console.log("Permission to access location was denied");
+        }
+        let location = await Location.getCurrentPositionAsync({});
+        const coords = {
+          latitude: location.coords.latitude,
+          longitude: location.coords.longitude,
+        };
+        if (coords === null) {
+          return; 
+        }
+        setGeoLocation(coords);
+      })();
+    }, []);
+
+  let text = "Waiting..";
+  if (errorMsg) {
+    text = errorMsg;
+  } else if (geolocation) {
+    text = JSON.stringify(geolocation);
+  }
+
+  // console.log(text)
+
   useEffect(() => {
     (async () => {
       const { status } = await Camera.requestCameraPermissionsAsync();
@@ -36,29 +63,12 @@ const CreatePostsScreen = ({ navigation }) => {
     })();
   }, []);
 
-  // if (hasPermission === null) {
-  //   return <View />;
-  // }
-  // if (hasPermission === false) {
-  //   return <Text>No access to camera</Text>;
-  // }
-
-  // useEffect(() => {
-  //   (async () => {
-  //     let { status } = await Location.requestForegroundPermissionsAsync();
-  //     if (status !== "granted") {
-  //       console.log("Permission to access location was denied");
-  //     }
-
-  //     let location = await Location.getCurrentPositionAsync({});
-  //     console.log(location);
-  //     const coords = {
-  //       latitude: location.coords.latitude,
-  //       longitude: location.coords.longitude,
-  //     };
-  //     setGeoLocation(coords);
-  //   })();
-  // }, []);
+  if (hasPermission === null) {
+    return <View />;
+  }
+  if (hasPermission === false) {
+    return <Text>No access to camera</Text>;
+  }
 
   const addImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -78,9 +88,12 @@ const CreatePostsScreen = ({ navigation }) => {
   };
 
   const takePhoto = async () => {
+   
     try {
       const { uri } = await cameraRef.takePictureAsync();
+
       await MediaLibrary.createAssetAsync(uri);
+      console.log(geolocation)
       setPhoto(uri);
     } catch (error) {
       console.log(error.message);
@@ -88,11 +101,15 @@ const CreatePostsScreen = ({ navigation }) => {
   };
 
   const sendPost = () => {
-    navigation.navigate("Posts", {
-      photo: photo || image,
-      name,
-      location,
-    });
+
+    // if (geolocation) {
+        navigation.navigate("DefaultScreen", {
+          photo: photo || image,
+          name,
+          location,
+          // text
+        });
+      // }
 
     setName("");
     setLocation("");
@@ -197,7 +214,7 @@ const CreatePostsScreen = ({ navigation }) => {
               style={{
                 ...styles.button,
                 backgroundColor:
-                  photo || (image && name && location) ? "#FF6C00" : "#BDBDBD",
+                  (name && location && photo) || image ? "#FF6C00" : "#BDBDBD",
               }}
               onPress={sendPost}
             >

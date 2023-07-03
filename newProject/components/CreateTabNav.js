@@ -1,7 +1,7 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import PostsScreen from "../pages/PostsScreen";
-import ProfileScreen from "../pages/ProfileScreen";
-import CreatePostsScreen from "../pages/CreatePostsScreen";
+import PostsScreen from "../pages/mainPages/PostsScreen";
+import ProfileScreen from "../pages/mainPages/ProfileScreen";
+import CreatePostsScreen from "../pages/mainPages/CreatePostsScreen";
 import { Feather } from "@expo/vector-icons";
 
 const MainTab = createBottomTabNavigator();
@@ -45,6 +45,7 @@ const CreateTabNav = () => {
                 style={{ marginRight: 10 }}
               />
             ),
+            headerShown: false,
           }}
         />
         <MainTab.Screen
@@ -75,6 +76,7 @@ const CreateTabNav = () => {
                 size={24}
                 color="#BDBDBD"
                 style={{ marginLeft: 10 }}
+                onPress={() => navigation.navigate("DefaultScreen")}
               />
             ),
             unmountOnBlur: true,
