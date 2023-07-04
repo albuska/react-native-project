@@ -37,7 +37,7 @@ const DefaultScreenPosts = ({ route, navigation }) => {
                   size={24}
                   color="#BDBDBD"
                   style={{ transform: [{ rotate: "-90deg" }] }}
-                  onPress={() => navigation.navigate("Comments")}
+                  onPress={() => navigation.navigate("Comments", { item })}
                 />
                 <Text style={{ color: "#BDBDBD", fontSize: 16, marginLeft: 8 }}>
                   0
@@ -48,7 +48,7 @@ const DefaultScreenPosts = ({ route, navigation }) => {
                   name="map-pin"
                   size={24}
                   color="#BDBDBD"
-                  onPress={() => navigation.navigate("Map", {})}
+                  onPress={() => navigation.navigate("Map", { item })}
                 />
                 <Text
                   style={{
@@ -59,7 +59,7 @@ const DefaultScreenPosts = ({ route, navigation }) => {
                     marginLeft: 8,
                   }}
                 >
-                  {item.location}
+                  {`${item.location.region}, ${item.location.country}`}
                 </Text>
               </View>
             </View>
