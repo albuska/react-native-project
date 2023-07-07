@@ -15,8 +15,10 @@ import authSlice from "./auth/authSlice";
 import dashboardSlice from "./dashboard/dashboardSlice";
 
 const rootReducer = combineReducers({
-  [authSlice.name]: authSlice.reducer,
-  [dashboardSlice.name]: dashboardSlice.reducer,
+  // [authSlice.name]: authSlice.reducer,
+  // [dashboardSlice.name]: dashboardSlice.reducer,
+  auth: authSlice.reducer,
+  dashboard: dashboardSlice.reducer,
 });
 
 const persistConfig = {
@@ -39,4 +41,3 @@ const store = configureStore({
 const persistor = persistStore(store);
 
 export { store, persistor };
-

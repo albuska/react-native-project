@@ -7,10 +7,13 @@ const authSlice = createSlice({
     login: null,
   },
   reducers: {
-    updateUserProfile: (state, { payload }) => ({
-      ...state,
-      userId: payload.userId,
-    }),
+    updateUserProfile: (state, { payload }) =>
+      // ({
+      //   ...state,
+      //   userId: payload.userId,
+      //   // login: payload.login
+      // }),
+      (state.userId = payload.userId),
   },
 });
 

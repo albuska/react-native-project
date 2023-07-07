@@ -19,27 +19,27 @@ export default function App() {
 
   const routing = useRoute(user);
 
-  console.log("Hello world");
+  console.log("hello");
 
-  const [fontsLoaded] = useFonts({
-    Agdasima: require("./assets/fonts/Agdasima-Regular.ttf"),
-    Roboto: require("./assets/fonts/Roboto-BoldItalic.ttf"),
-    RobotoBold: require("./assets/fonts/Roboto-Bold.ttf"),
-  });
+  // const [fontsLoaded] = useFonts({
+  //   Agdasima: require("./assets/fonts/Agdasima-Regular.ttf"),
+  //   Roboto: require("./assets/fonts/Roboto-BoldItalic.ttf"),
+  //   RobotoBold: require("./assets/fonts/Roboto-Bold.ttf"),
+  // });
 
-  const onLayoutRootView = useCallback(async () => {
-    if (fontsLoaded) {
-      await SplashScreen.hideAsync();
-    }
-  }, [fontsLoaded]);
+  // const onLayoutRootView = useCallback(async () => {
+  //   if (fontsLoaded) {
+  //     await SplashScreen.hideAsync();
+  //   }
+  // }, [fontsLoaded]);
 
-  if (!fontsLoaded) {
-    return null;
-  }
+  // if (!fontsLoaded) {
+  //   return null;
+  // }
 
   return (
     <Provider store={store}>
-      <View style={styles.container} onLayout={onLayoutRootView}>
+      <View style={styles.container}>
         <NavigationContainer>{routing}</NavigationContainer>
       </View>
     </Provider>

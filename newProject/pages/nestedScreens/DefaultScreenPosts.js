@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
   title: {
     color: "#212121",
     fontSize: 16,
-    fontFamily: "RobotoBold",
+    // fontFamily: "RobotoBold",
     marginTop: 5,
   },
 });

@@ -2,6 +2,7 @@
   "expo": {
     "name": "newProject",
     "slug": "newProject",
+    "jsEngine": "hermes",
     "version": "1.0.0",
     "orientation": "default",
     "icon": "./assets/icon.png",
@@ -14,8 +15,12 @@
     "assetBundlePatterns": [
       "**/*"
     ],
+    "packagerOpts": {
+      "sourceExts": [ "js", "json", "ts", "tsx", "jsx", "vue"]
+    },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "jsEngine": "jsc"
     },
     "android": {
       "softwareKeyboardLayoutMode": "pan",
@@ -23,7 +28,8 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       
-      }
+      },
+      "jsEngine": "jsc"
     },
     "web": {
       "favicon": "./assets/favicon.png"

@@ -1,9 +1,13 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const dashboardSlice = createSlice({
-  name: "auth",
-  initialState: 0,
+  name: "dashboard",
+  initialState: {
+    contacts: [],
+  },
   reducers: {},
 });
+
+
 
 export default dashboardSlice;
