@@ -12,10 +12,11 @@ import {
   Image,
   Button,
 } from "react-native";
-
 import Icon from "react-native-vector-icons/AntDesign";
 import * as ImagePicker from "expo-image-picker";
 import React, { useState } from "react";
+import { register } from "../redux/auth/operations";
+import { useDispatch, useSelector } from "react-redux";
 
 const RegistrationScreen = ({ navigation }) => {
   const [hidePass, setHidePass] = useState(true);
@@ -27,6 +28,8 @@ const RegistrationScreen = ({ navigation }) => {
   const [borderColor, setBorderColor] = useState("#E8E8E8");
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
   const [isLogin, setIsLogin] = useState(false);
+
+  const dispatch = useDispatch();
 
   const handleFocus = () => {
     // switch (value) {
@@ -72,10 +75,9 @@ const RegistrationScreen = ({ navigation }) => {
   };
 
   const signIn = () => {
-    setIsLogin(true); 
-    navigation.navigate("Posts");
+    dispatch(register({ login, email, password }));
+    setIsLogin(true);
 
-    console.debug("Welcome!");
     setLogin("");
     setEmail("");
     setPassword("");
@@ -161,15 +163,8 @@ const RegistrationScreen = ({ navigation }) => {
                 {hidePass ? "Показати" : "Заховати"}
               </Text>
             </View>
-            <TouchableOpacity
-              style={styles.button}
-              onPress={signIn}
-            >
-              <Text
-                style={styles.textButton}
-              >
-                Зареєструватися
-              </Text>
+            <TouchableOpacity style={styles.button} onPress={signIn}>
+              <Text style={styles.textButton}>Зареєструватися</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => navigation.navigate("Login")}>
               <Text style={styles.text}>Уже є аккаунт? Увійти</Text>

@@ -99,12 +99,12 @@ const CreatePostsScreen = ({ navigation }) => {
   };
 
   const sendPost = () => {
-      navigation.navigate("DefaultScreen", {
-        photo: photo || image,
-        name,
-        location,
-        geolocation,
-      });
+    navigation.navigate("DefaultScreen", {
+      photo: photo || image,
+      name,
+      location,
+      geolocation,
+    });
 
     setName("");
     setLocation("");

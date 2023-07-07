@@ -12,16 +12,20 @@ import {
   Alert,
 } from "react-native";
 import { useState } from "react";
+import { login } from "../redux/auth/operations";
+import { useDispatch, useSelector } from "react-redux";
 
 const LoginScreen = ({navigation}) => {
   const [hidePass, setHidePass] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-   const [isLogin, setIsLogin] = useState(false);
+  // const [isLogin, setIsLogin] = useState(false);
+  
+  const dispatch = useDispatch(); 
 
   const onLogin = () => {
-    setIsLogin(true);
-    navigation.navigate("Posts");
+  dispatch(login({ email, password }));
+    // setIsLogin(true);
 
     Alert.alert("You are welcome!");
 
