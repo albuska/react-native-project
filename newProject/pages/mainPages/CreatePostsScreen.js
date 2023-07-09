@@ -15,6 +15,7 @@ import { Camera } from "expo-camera";
 import { useState, useEffect } from "react";
 import * as ImagePicker from "expo-image-picker";
 import * as Location from "expo-location";
+import db from "../../firebase/config";
 
 const CreatePostsScreen = ({ navigation }) => {
   const [hasPermission, setHasPermission] = useState(null);
@@ -25,7 +26,6 @@ const CreatePostsScreen = ({ navigation }) => {
   const [type, setType] = useState(Camera.Constants.Type.back);
   const [image, setImage] = useState(null);
   const [geolocation, setGeoLocation] = useState(null);
-  const [errorMsg, setErrorMsg] = useState(null);
 
   useEffect(() => {
     (async () => {
@@ -67,8 +67,6 @@ const CreatePostsScreen = ({ navigation }) => {
     return <Text>No access to camera</Text>;
   }
 
-  console.log("geolocation on CreatePosts --->", geolocation);
-
   const addImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
@@ -99,6 +97,8 @@ const CreatePostsScreen = ({ navigation }) => {
   };
 
   const sendPost = () => {
+    uploadPhotoToServer();
+
     navigation.navigate("DefaultScreen", {
       photo: photo || image,
       name,
@@ -114,6 +114,16 @@ const CreatePostsScreen = ({ navigation }) => {
     setName("");
     setLocation("");
     setImage(null);
+  };
+
+  const uploadPhotoToServer = async () => {
+    const response = await fetch(photo || image);
+
+    const file = await response.blob();
+
+    const uniquePostId = Date.now().toString();
+
+    const data = await db.storage().ref(`postImage/${uniquePostId}`).put(file);
   };
 
   return (

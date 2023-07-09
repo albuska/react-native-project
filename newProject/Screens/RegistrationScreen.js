@@ -128,6 +128,7 @@ const RegistrationScreen = ({ navigation }) => {
               placeholder="Логін"
               value={login}
               onChangeText={setLogin}
+              required
             />
             <TextInput
               onFocus={() => setIsShowKeyboard(true)}
@@ -140,6 +141,7 @@ const RegistrationScreen = ({ navigation }) => {
               autoComplete="email"
               value={email}
               onChangeText={setEmail}
+              required
             />
             <View>
               <TextInput
@@ -154,6 +156,7 @@ const RegistrationScreen = ({ navigation }) => {
                 secureTextEntry={hidePass ? true : false}
                 value={password}
                 onChangeText={setPassword}
+                required
               />
 
               <Text
@@ -163,7 +166,15 @@ const RegistrationScreen = ({ navigation }) => {
                 {hidePass ? "Показати" : "Заховати"}
               </Text>
             </View>
-            <TouchableOpacity style={styles.button} onPress={signIn}>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={signIn}
+              disabled={
+                email && login && password
+                  ? false
+                  : true
+              }
+            >
               <Text style={styles.textButton}>Зареєструватися</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => navigation.navigate("Login")}>

@@ -3,16 +3,30 @@ import PostsScreen from "../pages/mainPages/PostsScreen";
 import ProfileScreen from "../pages/mainPages/ProfileScreen";
 import CreatePostsScreen from "../pages/mainPages/CreatePostsScreen";
 import { Feather } from "@expo/vector-icons";
+import { TouchableOpacity } from "react-native";
+import { logout } from "../redux/auth/operations";
+import { useDispatch } from "react-redux";
 
 const MainTab = createBottomTabNavigator();
 
 const CreateTabNav = () => {
+  const dispatch = useDispatch();
   return (
     <>
       <MainTab.Navigator
         screenOptions={{
           tabBarShowLabel: false,
           headerTitleAlign: "center",
+          headerRight: (props) => (
+            <TouchableOpacity onPress={() => dispatch(logout())}>
+              <Feather
+                name="log-out"
+                size={24}
+                color="#BDBDBD"
+                style={{ marginRight: 10 }}
+              />
+            </TouchableOpacity>
+          ),
         }}
       >
         <MainTab.Screen
@@ -37,14 +51,6 @@ const CreateTabNav = () => {
                 />
               );
             },
-            headerRight: (props) => (
-              <Feather
-                name="log-out"
-                size={24}
-                color="#BDBDBD"
-                style={{ marginRight: 10 }}
-              />
-            ),
             headerShown: false,
           }}
         />

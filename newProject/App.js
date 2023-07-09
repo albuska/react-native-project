@@ -1,24 +1,16 @@
 import "react-native-gesture-handler";
-import { NavigationContainer } from "@react-navigation/native";
 import { Provider } from "react-redux";
 import "react-native-url-polyfill/auto";
 import "react-native-get-random-values";
 import * as SplashScreen from "expo-splash-screen";
 import { useFonts } from "expo-font";
 import { useCallback, useState } from "react";
-import { Dimensions, StyleSheet, View } from "react-native";
-import useRoute from "./utils/router";
+import { StyleSheet, View } from "react-native";
 import { store } from "./redux/store";
-
-import db from "./firebase/config";
+import Main from "./components/Main";
 
 export default function App() {
-  const [user, setUser] = useState(null);
-
-  db.auth().onAuthStateChanged((user) => setUser(user));
-
-  const routing = useRoute(user);
-
+  
   console.log("hello");
 
   // const [fontsLoaded] = useFonts({
@@ -40,7 +32,7 @@ export default function App() {
   return (
     <Provider store={store}>
       <View style={styles.container}>
-        <NavigationContainer>{routing}</NavigationContainer>
+        <Main />
       </View>
     </Provider>
   );
