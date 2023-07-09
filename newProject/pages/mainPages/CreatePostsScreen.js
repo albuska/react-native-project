@@ -123,7 +123,13 @@ const CreatePostsScreen = ({ navigation }) => {
 
     const uniquePostId = Date.now().toString();
 
-    const data = await db.storage().ref(`postImage/${uniquePostId}`).put(file);
+    await db.storage().ref(`postImage/${uniquePostId}`).put(file);
+
+    const processedPhoto = await db
+      .storage()
+      .ref("postImage")
+      .child(uniquePostId)
+      .getDownloadURL();
   };
 
   return (
