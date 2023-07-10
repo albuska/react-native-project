@@ -9,12 +9,46 @@ import {
   Image,
   TextInput,
   TouchableOpacity,
+  SafeAreaView,
+  FlatList,
 } from "react-native";
+import { useSelector } from "react-redux";
+import db from "../../firebase/config";
+import { selectUser } from "../../redux/auth/selectors";
 
 const CommentsScreen = ({ route }) => {
+  const postId = route.params.item.id;
+
   const [isFocused, setIsFocused] = useState(false);
   const [picture, setPicture] = useState(null);
   const [comment, setComment] = useState("");
+  const [allComments, setAllComments] = useState([]);
+
+  const { login } = useSelector(selectUser);
+
+  useEffect(() => {
+    getAllComments();
+  }, []);
+
+  const createPost = async () => {
+    await db
+      .firestore()
+      .collection("posts")
+      .doc(postId)
+      .collection("comments")
+      .add({ comment, login });
+  };
+
+  const getAllComments = async () => {
+    await db
+      .firestore()
+      .collection("posts")
+      .doc(postId)
+      .collection("comments")
+      .onSnapshot((data) =>
+        setAllComments(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })))
+      );
+  };
 
   useEffect(() => {
     try {
@@ -31,6 +65,26 @@ const CommentsScreen = ({ route }) => {
       <View style={styles.container}>
         <View style={styles.card}>
           <Image style={styles.image} source={{ uri: picture }} />
+        </View>
+        <View
+          style={{
+            flex: 1,
+            flexDirection: "column",
+            justifyContent: "space-between",
+          }}
+        >
+          <SafeAreaView>
+            <FlatList
+              data={allComments}
+              renderItem={({ item }) => (
+                <View style={styles.commentBox}>
+                  <Text style={styles.commentText}>{item.comment}</Text>
+                </View>
+              )}
+              keyExtractor={(item) => item.id}
+            />
+          </SafeAreaView>
+
           <TouchableOpacity
             style={{ ...styles.button, marginBottom: isFocused ? 300 : 16 }}
           >
@@ -43,9 +97,9 @@ const CommentsScreen = ({ route }) => {
               required
               style={{ width: "100%" }}
             />
-            <View style={styles.buttonIconBox}>
+            <TouchableOpacity style={styles.buttonIconBox} onPress={createPost}>
               <AntDesign name="arrowup" size={24} color="#FFFFFF" />
-            </View>
+            </TouchableOpacity>
           </TouchableOpacity>
         </View>
       </View>
@@ -58,15 +112,19 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     backgroundColor: "#FFFFFF",
+    paddingHorizontal: 16,
   },
   card: {
+    height: 343,
     flex: 1,
     justifyContent: "space-between",
-    marginHorizontal: 16,
+
     marginTop: 32,
   },
   image: {
-    height: "40%",
+    width: "100%",
+    height: "100%",
+    // height: 343,
     borderRadius: 8,
   },
   button: {
@@ -74,7 +132,6 @@ const styles = StyleSheet.create({
     padding: 16,
     borderRadius: 100,
     backgroundColor: "#BDBDBD",
-    marginHorizontal: 16,
     marginVertical: 16,
   },
   buttonIconBox: {
@@ -87,6 +144,22 @@ const styles = StyleSheet.create({
     width: 34,
     height: 34,
     borderRadius: 50,
+  },
+  commentBox: {
+    height: 29,
+    backgroundColor: "rgba(0, 0, 0, 0.03)",
+    borderRadius: 6,
+    padding: 16,
+    paddingVertical: 6,
+    marginBottom: 24,
+  },
+  commentText: {
+    height: 30,
+    color: "#212121",
+    lineHeight: 1.4,
+    fontSize: 13,
+    paddingVertical: 10,
+    paddingHorizontal: 16,
   },
 });
 

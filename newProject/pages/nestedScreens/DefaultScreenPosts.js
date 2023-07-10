@@ -1,19 +1,23 @@
 import { Feather } from "@expo/vector-icons";
 import { useEffect, useState } from "react";
 import { View, Text, StyleSheet, Image, FlatList } from "react-native";
+import db from "../../firebase/config";
 
-const DefaultScreenPosts = ({ route, navigation }) => {
+const DefaultScreenPosts = ({ navigation }) => {
   const [posts, setPosts] = useState([]);
 
+  const getAllPost = async () => {
+    await db
+      .firestore()
+      .collection("posts")
+      .onSnapshot((data) =>
+        setPosts(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })))
+      );
+  };
+
   useEffect(() => {
-    try {
-      if (route.params) {
-        setPosts((prevState) => [...prevState, route.params]);
-      }
-    } catch (error) {
-      console.log(error.message);
-    }
-  }, [route.params]);
+    getAllPost();
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -37,7 +41,9 @@ const DefaultScreenPosts = ({ route, navigation }) => {
                   size={24}
                   color="#BDBDBD"
                   style={{ transform: [{ rotate: "-90deg" }] }}
-                  onPress={() => navigation.navigate("Comments", { item })}
+                  onPress={() =>
+                    navigation.navigate("Comments", { item })
+                  }
                 />
                 <Text style={{ color: "#BDBDBD", fontSize: 16, marginLeft: 8 }}>
                   0

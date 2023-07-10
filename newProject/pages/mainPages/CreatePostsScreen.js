@@ -16,6 +16,8 @@ import { useState, useEffect } from "react";
 import * as ImagePicker from "expo-image-picker";
 import * as Location from "expo-location";
 import db from "../../firebase/config";
+import { useSelector } from "react-redux";
+import { selectUser } from "../../redux/auth/selectors";
 
 const CreatePostsScreen = ({ navigation }) => {
   const [hasPermission, setHasPermission] = useState(null);
@@ -26,6 +28,8 @@ const CreatePostsScreen = ({ navigation }) => {
   const [type, setType] = useState(Camera.Constants.Type.back);
   const [image, setImage] = useState(null);
   const [geolocation, setGeoLocation] = useState(null);
+
+  const { userId, login } = useSelector(selectUser);
 
   useEffect(() => {
     (async () => {
@@ -97,14 +101,16 @@ const CreatePostsScreen = ({ navigation }) => {
   };
 
   const sendPost = () => {
-    uploadPhotoToServer();
+    uploadPostToServer();
 
-    navigation.navigate("DefaultScreen", {
-      photo: photo || image,
-      name,
-      location,
-      geolocation,
-    });
+    // navigation.navigate("DefaultScreen", {
+    //   photo: photo || image,
+    //   name,
+    //   location,
+    //   geolocation,
+    // });
+
+    navigation.navigate("DefaultScreen");
 
     setName("");
     setLocation("");
@@ -114,6 +120,15 @@ const CreatePostsScreen = ({ navigation }) => {
     setName("");
     setLocation("");
     setImage(null);
+  };
+
+  const uploadPostToServer = async () => {
+    const photo = await uploadPhotoToServer();
+
+    await db
+      .firestore()
+      .collection("posts")
+      .add({ photo, name, location, geolocation, userId, login });
   };
 
   const uploadPhotoToServer = async () => {
@@ -130,6 +145,8 @@ const CreatePostsScreen = ({ navigation }) => {
       .ref("postImage")
       .child(uniquePostId)
       .getDownloadURL();
+
+    return processedPhoto;
   };
 
   return (
