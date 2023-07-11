@@ -16,7 +16,7 @@ import { useSelector } from "react-redux";
 import db from "../../firebase/config";
 import { selectUser } from "../../redux/auth/selectors";
 
-const CommentsScreen = ({ route, navigation }) => {
+const CommentsScreen = ({ route }) => {
   const postId = route.params.item.id;
 
   const [isFocused, setIsFocused] = useState(false);
@@ -24,8 +24,19 @@ const CommentsScreen = ({ route, navigation }) => {
   const [comment, setComment] = useState("");
   const [allComments, setAllComments] = useState([]);
 
-  const date = new Date(2011, 0, 1, 0, 0, 0, 0);
+  const date = new Date().toLocaleString("uk-UA", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
   console.log(date);
+
+  const { day, month, year, hour, minute } = date;
+
+  // const formatDate = `${day} ${month}, ${year} | ${hour} ${minute}`;
+  // console.log(formatDate);
 
   const { login, avatar } = useSelector(selectUser);
 
@@ -39,9 +50,9 @@ const CommentsScreen = ({ route, navigation }) => {
       .collection("posts")
       .doc(postId)
       .collection("comments")
-      .add({ comment, login });
-    
-    comment(''); 
+      .add({ comment, login, date });
+
+    // comment("");
   };
 
   const getAllComments = async () => {
@@ -52,7 +63,8 @@ const CommentsScreen = ({ route, navigation }) => {
       .collection("comments")
       .onSnapshot((data) =>
         setAllComments(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })))
-      );
+    );
+    
   };
 
   useEffect(() => {
@@ -78,14 +90,17 @@ const CommentsScreen = ({ route, navigation }) => {
             justifyContent: "space-between",
           }}
         >
-          <SafeAreaView>
+          <SafeAreaView style={{ height: 250 }}>
             <FlatList
               data={allComments}
               renderItem={({ item }) => (
-                <View style={{ flexDirection: "row", gap: 16 }}>
+                <View style={{ flexDirection: "row", gap: 16, marginTop: 16 }}>
                   <Image source={{ uri: avatar }} style={styles.loadPhoto} />
                   <View style={styles.commentBox}>
                     <Text style={styles.commentText}>{item.comment}</Text>
+                    <Text style={{ fontSize: 10, color: "#BDBDBD" }}>
+                      {item.date}
+                    </Text>
                   </View>
                 </View>
               )}
@@ -118,18 +133,15 @@ const CommentsScreen = ({ route, navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
+    // justifyContent: "center",
     backgroundColor: "#FFFFFF",
     paddingHorizontal: 16,
   },
   card: {
-    height: 343,
-    flex: 1,
-    justifyContent: "space-between",
-    marginVertical: 32,
+    height: 250,
+    // marginTop: 32,
   },
   loadPhoto: {
-    // top: -60,
     width: 28,
     height: 28,
     backgroundColor: "#F6F6F6",
@@ -145,7 +157,7 @@ const styles = StyleSheet.create({
     padding: 16,
     borderRadius: 100,
     backgroundColor: "#BDBDBD",
-    marginVertical: 16,
+    paddingVertical: 16,
   },
   buttonIconBox: {
     position: "absolute",
@@ -159,13 +171,13 @@ const styles = StyleSheet.create({
     borderRadius: 50,
   },
   commentBox: {
-    backgroundColor: "rgba(0, 0, 0, 0.03)",
+    width: "100%",    backgroundColor: "rgba(0, 0, 0, 0.03)",
     borderRadius: 6,
     paddingTop: 16,
     marginBottom: 24,
   },
   commentText: {
-    height: 30,
+    // height: 30,
     color: "#212121",
     lineHeight: 1.4,
     fontSize: 13,

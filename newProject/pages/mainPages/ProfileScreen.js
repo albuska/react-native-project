@@ -17,6 +17,21 @@ const ProfileScreen = () => {
   const { userId, avatar, login } = useSelector(selectUser);
 
   const [listPosts, setListPosts] = useState([]);
+  const [allComments, setAllComments] = useState([]);
+
+  const getAllComments = async () => {
+    await db
+      .firestore()
+      // .collection("posts")
+      .collection("comments")
+      .onSnapshot((data) =>
+        setAllComments(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })))
+      );
+  };
+
+  useEffect(() => {
+    getAllComments();
+  }, []);
   // const [isFollowing, setIsFollowing] = useState(false);
   // const [likes, setLikes] = useState(0);
 
@@ -59,7 +74,8 @@ const ProfileScreen = () => {
         <SafeAreaView>
           <FlatList
             data={listPosts}
-            renderItem={({ item }) => (
+            renderItem={
+              ({ item }) =>
               <View style={styles.card}>
                 <Image style={styles.image} source={{ uri: item.photo }} />
                 <Text style={styles.title}>{item.name}</Text>
@@ -77,9 +93,6 @@ const ProfileScreen = () => {
                         size={24}
                         color="#BDBDBD"
                         style={{ transform: [{ rotate: "-90deg" }] }}
-                        onPress={() =>
-                          navigation.navigate("Comments", { item })
-                        }
                       />
                       <Text
                         style={{
@@ -88,16 +101,11 @@ const ProfileScreen = () => {
                           marginLeft: 8,
                         }}
                       >
-                        0
+                        {allComments ? allComments.length : 0}
                       </Text>
                     </View>
                     <View style={{ flexDirection: "row" }}>
-                      <Feather
-                        onPress={handleClickChangeFollow}
-                        name="thumbs-up"
-                        size={24}
-                        color={isFollowing ? "#FF6C00" : "#BDBDBD"}
-                      />
+                      <Feather name="thumbs-up" size={24} color="#FF6C00" />
                       <Text
                         style={{
                           color: "#BDBDBD",
@@ -105,8 +113,7 @@ const ProfileScreen = () => {
                           marginLeft: 8,
                         }}
                       >
-                        0
-                        {/* {likes} */}
+                        0{/* {likes} */}
                       </Text>
                     </View>
                   </View>
@@ -131,7 +138,7 @@ const ProfileScreen = () => {
                   </View>
                 </View>
               </View>
-            )}
+            }
             keyExtractor={(item) => item.id}
           />
         </SafeAreaView>

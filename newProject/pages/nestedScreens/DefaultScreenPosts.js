@@ -14,7 +14,19 @@ import { selectUser } from "../../redux/auth/selectors";
 
 const DefaultScreenPosts = ({ navigation }) => {
   const [posts, setPosts] = useState([]);
-  const [allComments, setAllComments] = useState([]);
+  const [isFollowing, setIsFollowing] = useState(false);
+  const [likes, setLikes] = useState(0);
+
+  const handleClickChangeFollow = () => {
+    console.log("click");
+    if (!isFollowing) {
+      setIsFollowing(true);
+      setLikes(likes + 1);
+    } else {
+      setIsFollowing(false);
+      setLikes(likes - 1);
+    }
+  };
 
   const { avatar, login, email } = useSelector(selectUser);
 
@@ -27,10 +39,20 @@ const DefaultScreenPosts = ({ navigation }) => {
       );
   };
 
+  const getAllLikes = async () => {
+    await db
+      .firestore()
+      .collection("posts")
+      .doc(postId)
+      .collection("comments")
+      .onSnapshot((data) =>
+        setAllComments(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })))
+      );
+  };
+
   useEffect(() => {
     getAllPost();
   }, []);
-
 
   return (
     <View style={styles.container}>
@@ -56,20 +78,38 @@ const DefaultScreenPosts = ({ navigation }) => {
                   justifyContent: "space-between",
                 }}
               >
-                <View style={{ flexDirection: "row" }}>
-                  <Feather
-                    name="message-circle"
-                    size={24}
-                    color="#BDBDBD"
-                    style={{ transform: [{ rotate: "-90deg" }] }}
-                    onPress={() => navigation.navigate("Comments", { item })}
-                  />
-                  <Text
-                    style={{ color: "#BDBDBD", fontSize: 16, marginLeft: 8 }}
-                  >
-                    {/* {allComments.length} */}
-                    0
-                  </Text>
+                <View style={{ flexDirection: "row", gap: 24 }}>
+                  <View style={{ flexDirection: "row" }}>
+                    <Feather
+                      name="message-circle"
+                      size={24}
+                      color="#BDBDBD"
+                      style={{ transform: [{ rotate: "-90deg" }] }}
+                      onPress={() => navigation.navigate("Comments", { item })}
+                    />
+                    <Text
+                      style={{ color: "#BDBDBD", fontSize: 16, marginLeft: 8 }}
+                    >
+                      {/* {allComments.length} */}0
+                    </Text>
+                  </View>
+                  <View style={{ flexDirection: "row" }}>
+                    <Feather
+                      onPress={handleClickChangeFollow}
+                      name="thumbs-up"
+                      size={24}
+                      color={isFollowing ? "#FF6C00" : "#BDBDBD"}
+                    />
+                    <Text
+                      style={{
+                        color: "#BDBDBD",
+                        fontSize: 16,
+                        marginLeft: 8,
+                      }}
+                    >
+                      {likes}
+                    </Text>
+                  </View>
                 </View>
                 <View style={{ flexDirection: "row" }}>
                   <Feather
