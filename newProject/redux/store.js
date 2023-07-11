@@ -12,13 +12,9 @@ import {
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import authSlice from "./auth/authSlice";
-import dashboardSlice from "./dashboard/dashboardSlice";
 
 const rootReducer = combineReducers({
   [authSlice.name]: authSlice.reducer,
-  [dashboardSlice.name]: dashboardSlice.reducer,
-  // auth: authSlice.reducer,
-  // dashboard: dashboardSlice.reducer,
 });
 
 const persistConfig = {
@@ -27,7 +23,6 @@ const persistConfig = {
 };
 
 const reducer = persistReducer(persistConfig, rootReducer);
-console.log(rootReducer);
 
 const store = configureStore({
   reducer,

@@ -119,7 +119,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontStyle: "normal",
-    // fontWeight: 500,
+    fontWeight: "bold",
     fontSize: 30,
     lineHeight: 35,
     textAlign: "center",
@@ -148,7 +148,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginTop: 16,
     color: "#1B4371",
-    // fontWeight: "bold",
+    fontWeight: "bold",
   },
   textButtonToRegister: {
     textDecorationLine: "underline",

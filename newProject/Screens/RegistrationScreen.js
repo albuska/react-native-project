@@ -75,17 +75,14 @@ const RegistrationScreen = ({ navigation }) => {
   };
 
   const signIn = () => {
-    dispatch(register({ login, email, password }));
+    dispatch(register({ image, login, email, password }));
     setIsLogin(true);
 
-    setLogin("");
-    setEmail("");
-    setPassword("");
+    // setImage(null); 
+    // setLogin("");
+    // setEmail("");
+    // setPassword("");
   };
-
-  //   const handleLoginChange = (login) => setLogin(login);
-  //   const handleEmailChange = (email) => setLogin(email);
-  //   const handlePasswordChange = (password) => setLogin(password);
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -169,11 +166,7 @@ const RegistrationScreen = ({ navigation }) => {
             <TouchableOpacity
               style={styles.button}
               onPress={signIn}
-              disabled={
-                email && login && password
-                  ? false
-                  : true
-              }
+              disabled={email && login && password ? false : true}
             >
               <Text style={styles.textButton}>Зареєструватися</Text>
             </TouchableOpacity>
@@ -204,7 +197,7 @@ const styles = StyleSheet.create({
   },
   title: {
     // fontFamily: "Roboto",
-    // fontWeight: 500,
+    fontWeight: "bold",
     fontSize: 30,
     lineHeight: 35,
     textAlign: "center",
@@ -231,7 +224,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginTop: 16,
     color: "#1B4371",
-    // fontWeight: "bold",
+    fontWeight: "bold",
   },
   loadPhoto: {
     position: "absolute",

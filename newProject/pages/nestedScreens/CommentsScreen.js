@@ -16,7 +16,7 @@ import { useSelector } from "react-redux";
 import db from "../../firebase/config";
 import { selectUser } from "../../redux/auth/selectors";
 
-const CommentsScreen = ({ route }) => {
+const CommentsScreen = ({ route, navigation }) => {
   const postId = route.params.item.id;
 
   const [isFocused, setIsFocused] = useState(false);
@@ -24,7 +24,10 @@ const CommentsScreen = ({ route }) => {
   const [comment, setComment] = useState("");
   const [allComments, setAllComments] = useState([]);
 
-  const { login } = useSelector(selectUser);
+  const date = new Date(2011, 0, 1, 0, 0, 0, 0);
+  console.log(date);
+
+  const { login, avatar } = useSelector(selectUser);
 
   useEffect(() => {
     getAllComments();
@@ -37,6 +40,8 @@ const CommentsScreen = ({ route }) => {
       .doc(postId)
       .collection("comments")
       .add({ comment, login });
+    
+    comment(''); 
   };
 
   const getAllComments = async () => {
@@ -77,8 +82,11 @@ const CommentsScreen = ({ route }) => {
             <FlatList
               data={allComments}
               renderItem={({ item }) => (
-                <View style={styles.commentBox}>
-                  <Text style={styles.commentText}>{item.comment}</Text>
+                <View style={{ flexDirection: "row", gap: 16 }}>
+                  <Image source={{ uri: avatar }} style={styles.loadPhoto} />
+                  <View style={styles.commentBox}>
+                    <Text style={styles.commentText}>{item.comment}</Text>
+                  </View>
                 </View>
               )}
               keyExtractor={(item) => item.id}
@@ -118,13 +126,18 @@ const styles = StyleSheet.create({
     height: 343,
     flex: 1,
     justifyContent: "space-between",
-
-    marginTop: 32,
+    marginVertical: 32,
+  },
+  loadPhoto: {
+    // top: -60,
+    width: 28,
+    height: 28,
+    backgroundColor: "#F6F6F6",
+    borderRadius: 50,
   },
   image: {
     width: "100%",
     height: "100%",
-    // height: 343,
     borderRadius: 8,
   },
   button: {
@@ -146,11 +159,9 @@ const styles = StyleSheet.create({
     borderRadius: 50,
   },
   commentBox: {
-    height: 29,
     backgroundColor: "rgba(0, 0, 0, 0.03)",
     borderRadius: 6,
-    padding: 16,
-    paddingVertical: 6,
+    paddingTop: 16,
     marginBottom: 24,
   },
   commentText: {

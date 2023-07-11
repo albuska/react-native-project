@@ -17,16 +17,16 @@ const CreateTabNav = () => {
         screenOptions={{
           tabBarShowLabel: false,
           headerTitleAlign: "center",
-          headerRight: (props) => (
-            <TouchableOpacity onPress={() => dispatch(logout())}>
-              <Feather
-                name="log-out"
-                size={24}
-                color="#BDBDBD"
-                style={{ marginRight: 10 }}
-              />
-            </TouchableOpacity>
-          ),
+          // headerRight: (props) => (
+          //   <TouchableOpacity onPress={() => dispatch(logout())}>
+          //     <Feather
+          //       name="log-out"
+          //       size={24}
+          //       color="#BDBDBD"
+          //       style={{ marginRight: 10 }}
+          //     />
+          //   </TouchableOpacity>
+          // ),
         }}
       >
         <MainTab.Screen
@@ -110,6 +110,7 @@ const CreateTabNav = () => {
                 />
               );
             },
+            headerShown: false,
           }}
         />
       </MainTab.Navigator>
