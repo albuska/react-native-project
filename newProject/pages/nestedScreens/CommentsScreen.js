@@ -19,10 +19,10 @@ import { selectUser } from "../../redux/auth/selectors";
 const CommentsScreen = ({ route }) => {
   const postId = route.params.item.id;
 
-  const [isFocused, setIsFocused] = useState(false);
   const [picture, setPicture] = useState(null);
   const [comment, setComment] = useState("");
   const [allComments, setAllComments] = useState([]);
+  const [isShowKeyboard, setIsShowKeyboard] = useState(false);
 
   const date = new Date().toLocaleString("uk-UA", {
     day: "numeric",
@@ -31,12 +31,6 @@ const CommentsScreen = ({ route }) => {
     hour: "2-digit",
     minute: "2-digit",
   });
-  console.log(date);
-
-  const { day, month, year, hour, minute } = date;
-
-  // const formatDate = `${day} ${month}, ${year} | ${hour} ${minute}`;
-  // console.log(formatDate);
 
   const { login, avatar } = useSelector(selectUser);
 
@@ -52,7 +46,7 @@ const CommentsScreen = ({ route }) => {
       .collection("comments")
       .add({ comment, login, date });
 
-    // comment("");
+    setComment("");
   };
 
   const getAllComments = async () => {
@@ -63,8 +57,7 @@ const CommentsScreen = ({ route }) => {
       .collection("comments")
       .onSnapshot((data) =>
         setAllComments(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })))
-    );
-    
+      );
   };
 
   useEffect(() => {
@@ -78,7 +71,7 @@ const CommentsScreen = ({ route }) => {
   }, [route.params]);
 
   return (
-    <TouchableWithoutFeedback onPress={Keyboard}>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.container}>
         <View style={styles.card}>
           <Image style={styles.image} source={{ uri: picture }} />
@@ -90,15 +83,28 @@ const CommentsScreen = ({ route }) => {
             justifyContent: "space-between",
           }}
         >
-          <SafeAreaView style={{ height: 250 }}>
+          <SafeAreaView style={{ height: 300 }}>
             <FlatList
               data={allComments}
               renderItem={({ item }) => (
                 <View style={{ flexDirection: "row", gap: 16, marginTop: 16 }}>
                   <Image source={{ uri: avatar }} style={styles.loadPhoto} />
                   <View style={styles.commentBox}>
-                    <Text style={styles.commentText}>{item.comment}</Text>
-                    <Text style={{ fontSize: 10, color: "#BDBDBD" }}>
+                    <Text
+                      style={styles.commentText}
+                      onPress={() => setIsShowKeyboard(true)}
+                    >
+                      {item.comment}
+                    </Text>
+                    <Text
+                      style={{
+                        fontSize: 10,
+                        color: "#BDBDBD",
+                        marginLeft: "auto",
+                        marginRight: 60,
+                        paddingBottom: 20,
+                      }}
+                    >
                       {item.date}
                     </Text>
                   </View>
@@ -109,11 +115,11 @@ const CommentsScreen = ({ route }) => {
           </SafeAreaView>
 
           <TouchableOpacity
-            style={{ ...styles.button, marginBottom: isFocused ? 300 : 16 }}
+            style={{ ...styles.button, bottom: isShowKeyboard ? 50 : 10 }}
           >
             <TextInput
-              onFocus={() => setIsFocused(true)}
-              onBlur={() => setIsFocused(false)}
+              onFocus={() => setIsShowKeyboard(true)}
+              onBlur={() => setIsShowKeyboard(false)}
               value={comment}
               onChangeText={setComment}
               placeholder="Коментувати..."
@@ -153,11 +159,11 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   button: {
-    alignItems: "center",
+    position: "absolute",
+    width: "100%",
     padding: 16,
     borderRadius: 100,
     backgroundColor: "#BDBDBD",
-    paddingVertical: 16,
   },
   buttonIconBox: {
     position: "absolute",
@@ -171,15 +177,16 @@ const styles = StyleSheet.create({
     borderRadius: 50,
   },
   commentBox: {
-    width: "100%",    backgroundColor: "rgba(0, 0, 0, 0.03)",
+    width: "100%",
+    backgroundColor: "rgba(0, 0, 0, 0.03)",
     borderRadius: 6,
     paddingTop: 16,
-    marginBottom: 24,
+    marginBottom: 10,
   },
   commentText: {
+    width: "100%",
     // height: 30,
     color: "#212121",
-    lineHeight: 1.4,
     fontSize: 13,
     paddingVertical: 10,
     paddingHorizontal: 16,

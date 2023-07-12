@@ -78,7 +78,7 @@ const RegistrationScreen = ({ navigation }) => {
     dispatch(register({ image, login, email, password }));
     setIsLogin(true);
 
-    // setImage(null); 
+    // setImage(null);
     // setLogin("");
     // setEmail("");
     // setPassword("");

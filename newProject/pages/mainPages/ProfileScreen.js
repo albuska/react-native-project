@@ -16,49 +16,74 @@ import db from "../../firebase/config";
 const ProfileScreen = () => {
   const { userId, avatar, login } = useSelector(selectUser);
 
-  const [listPosts, setListPosts] = useState([]);
-  const [allComments, setAllComments] = useState([]);
-
-  const getAllComments = async () => {
-    await db
-      .firestore()
-      // .collection("posts")
-      .collection("comments")
-      .onSnapshot((data) =>
-        setAllComments(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })))
-      );
-  };
+  const [posts, setPosts] = useState([]);
 
   useEffect(() => {
-    getAllComments();
-  }, []);
-  // const [isFollowing, setIsFollowing] = useState(false);
-  // const [likes, setLikes] = useState(0);
-
-  // const handleClickChangeFollow = () => {
-  //   console.log("click");
-  //   if (!isFollowing) {
-  //     setIsFollowing(true);
-  //     setLikes(likes + 1);
-  //   } else {
-  //     setIsFollowing(false);
-  //     setLikes(likes - 1);
-  //   }
-  // };
-
-  const getUserPosts = async () => {
-    await db
+    const unsubscribe = db
       .firestore()
       .collection("posts")
       .where("userId", "==", userId)
-      .onSnapshot((data) =>
-        setListPosts(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })))
-      );
-  };
+      .onSnapshot((snapshot) => {
+        const updatedPosts = [];
+        snapshot.forEach((doc) => {
+          const post = doc.data();
+          post.id = doc.id;
+          post.comments = [];
+          updatedPosts.push(post);
 
-  useEffect(() => {
-    getUserPosts();
+          const commentsSnapshot = doc.ref
+            .collection("comments")
+            .onSnapshot((comments) => {
+              const updatedComments = comments.docs.map((commentDoc) => ({
+                id: commentDoc.id,
+                ...commentDoc.data(),
+              }));
+              const postIndex = updatedPosts.findIndex((p) => p.id === doc.id);
+              if (postIndex !== -1) {
+                updatedPosts[postIndex].comments = updatedComments;
+                setPosts([...updatedPosts]);
+              }
+            });
+
+          return () => {
+            commentsSnapshot();
+          };
+        });
+      });
+
+    return () => {
+      unsubscribe();
+    };
   }, []);
+
+  const handleLike = (postId) => {
+    const currentUser = db.auth().currentUser;
+
+    const post = posts.find((item) => item.id === postId);
+    const hasLiked = post.likes && post.likes[currentUser.uid];
+
+    if (hasLiked) {
+      db.firestore()
+        .collection("posts")
+        .doc(postId)
+        .update({
+          [`likes.${currentUser.uid}`]: db.firestore.FieldValue.delete(),
+        })
+        .catch((error) => {
+          console.error("Помилка при забиранні лайка:", error);
+        });
+    } else {
+      db.firestore()
+        .collection("posts")
+        .doc(postId)
+        .update({
+          [`likes.${currentUser.uid}`]: true,
+        })
+        .catch((error) => {
+          console.error("Помилка при додаванні лайка:", error);
+        });
+    }
+  };
 
   return (
     <ImageBackground
@@ -73,9 +98,9 @@ const ProfileScreen = () => {
         </View>
         <SafeAreaView>
           <FlatList
-            data={listPosts}
-            renderItem={
-              ({ item }) =>
+            data={setPosts}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item }) => (
               <View style={styles.card}>
                 <Image style={styles.image} source={{ uri: item.photo }} />
                 <Text style={styles.title}>{item.name}</Text>
@@ -101,11 +126,20 @@ const ProfileScreen = () => {
                           marginLeft: 8,
                         }}
                       >
-                        {allComments ? allComments.length : 0}
+                        {/* {allComments ? allComments.length : 0} */}0
                       </Text>
                     </View>
                     <View style={{ flexDirection: "row" }}>
-                      <Feather name="thumbs-up" size={24} color="#FF6C00" />
+                      <Feather
+                        onPress={() => handleLike(item.id)}
+                        name="thumbs-up"
+                        size={24}
+                        color={
+                          Object.keys(item.likes).length > 0
+                            ? "#FF6C00"
+                            : "#BDBDBD"
+                        }
+                      />
                       <Text
                         style={{
                           color: "#BDBDBD",
@@ -113,7 +147,7 @@ const ProfileScreen = () => {
                           marginLeft: 8,
                         }}
                       >
-                        0{/* {likes} */}
+                        {item.likes ? Object.keys(item.likes).length : 0}
                       </Text>
                     </View>
                   </View>
@@ -138,8 +172,7 @@ const ProfileScreen = () => {
                   </View>
                 </View>
               </View>
-            }
-            keyExtractor={(item) => item.id}
+            )}
           />
         </SafeAreaView>
       </View>

@@ -4,29 +4,19 @@ import ProfileScreen from "../pages/mainPages/ProfileScreen";
 import CreatePostsScreen from "../pages/mainPages/CreatePostsScreen";
 import { Feather } from "@expo/vector-icons";
 import { TouchableOpacity } from "react-native";
-import { logout } from "../redux/auth/operations";
-import { useDispatch } from "react-redux";
+import { useNavigation } from "@react-navigation/native";
 
 const MainTab = createBottomTabNavigator();
 
 const CreateTabNav = () => {
-  const dispatch = useDispatch();
+  const navigation = useNavigation();
+
   return (
     <>
       <MainTab.Navigator
         screenOptions={{
           tabBarShowLabel: false,
           headerTitleAlign: "center",
-          // headerRight: (props) => (
-          //   <TouchableOpacity onPress={() => dispatch(logout())}>
-          //     <Feather
-          //       name="log-out"
-          //       size={24}
-          //       color="#BDBDBD"
-          //       style={{ marginRight: 10 }}
-          //     />
-          //   </TouchableOpacity>
-          // ),
         }}
       >
         <MainTab.Screen
@@ -77,17 +67,19 @@ const CreateTabNav = () => {
               );
             },
             headerLeft: (props) => (
-              <Feather
-                name="arrow-left"
-                size={24}
-                color="#BDBDBD"
-                style={{ marginLeft: 10 }}
-                onPress={() => navigation.navigate("DefaultScreen")}
-              />
+              <TouchableOpacity onPress={() => navigation.navigate("Posts")}>
+                <Feather
+                  name="arrow-left"
+                  size={24}
+                  color="#BDBDBD"
+                  style={{ marginLeft: 10 }}
+                />
+              </TouchableOpacity>
             ),
             unmountOnBlur: true,
           }}
         />
+
         <MainTab.Screen
           name="Profile"
           component={ProfileScreen}

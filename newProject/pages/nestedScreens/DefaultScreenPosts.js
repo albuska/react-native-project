@@ -14,45 +14,76 @@ import { selectUser } from "../../redux/auth/selectors";
 
 const DefaultScreenPosts = ({ navigation }) => {
   const [posts, setPosts] = useState([]);
-  const [isFollowing, setIsFollowing] = useState(false);
-  const [likes, setLikes] = useState(0);
-
-  const handleClickChangeFollow = () => {
-    console.log("click");
-    if (!isFollowing) {
-      setIsFollowing(true);
-      setLikes(likes + 1);
-    } else {
-      setIsFollowing(false);
-      setLikes(likes - 1);
-    }
-  };
 
   const { avatar, login, email } = useSelector(selectUser);
 
-  const getAllPost = async () => {
-    await db
-      .firestore()
-      .collection("posts")
-      .onSnapshot((data) =>
-        setPosts(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })))
-      );
-  };
-
-  const getAllLikes = async () => {
-    await db
-      .firestore()
-      .collection("posts")
-      .doc(postId)
-      .collection("comments")
-      .onSnapshot((data) =>
-        setAllComments(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })))
-      );
-  };
-
   useEffect(() => {
-    getAllPost();
+    const unsubscribe = db
+      .firestore()
+      .collection("posts")
+      .onSnapshot((snapshot) => {
+        const updatedPosts = [];
+        snapshot.forEach((doc) => {
+          const post = doc.data();
+          post.id = doc.id;
+          post.comments = [];
+          updatedPosts.push(post);
+
+          const commentsSnapshot = doc.ref
+            .collection("comments")
+            .onSnapshot((comments) => {
+              const updatedComments = comments.docs.map((commentDoc) => ({
+                id: commentDoc.id,
+                ...commentDoc.data(),
+              }));
+              const postIndex = updatedPosts.findIndex((p) => p.id === doc.id);
+              if (postIndex !== -1) {
+                updatedPosts[postIndex].comments = updatedComments;
+                setPosts([...updatedPosts]);
+              }
+            });
+
+          return () => {
+            commentsSnapshot();
+          };
+        });
+      });
+
+    return () => {
+      unsubscribe();
+    };
   }, []);
+
+  const handleLike = (postId) => {
+    const currentUser = db.auth().currentUser;
+
+    const post = posts.find((item) => item.id === postId);
+    const hasLiked = post.likes && post.likes[currentUser.uid];
+
+    if (hasLiked) {
+      db.firestore()
+        .collection("posts")
+        .doc(postId)
+        .update({
+          [`likes.${currentUser.uid}`]: db.firestore.FieldValue.delete(),
+        })
+        .catch((error) => {
+          console.error("Помилка при забиранні лайка:", error);
+        });
+    } else {
+      db.firestore()
+        .collection("posts")
+        .doc(postId)
+        .update({
+          [`likes.${currentUser.uid}`]: true,
+        })
+        .catch((error) => {
+          console.error("Помилка при додаванні лайка:", error);
+        });
+    }
+  };
+
+  console.log("posts ---->", posts);
 
   return (
     <View style={styles.container}>
@@ -83,22 +114,26 @@ const DefaultScreenPosts = ({ navigation }) => {
                     <Feather
                       name="message-circle"
                       size={24}
-                      color="#BDBDBD"
+                      color={item.comments.length >= 0 ? "#FF6C00" : "#BDBDBD"}
                       style={{ transform: [{ rotate: "-90deg" }] }}
                       onPress={() => navigation.navigate("Comments", { item })}
                     />
                     <Text
                       style={{ color: "#BDBDBD", fontSize: 16, marginLeft: 8 }}
                     >
-                      {/* {allComments.length} */}0
+                      {item.comments.length >= 0 ? item.comments.length : 0}
                     </Text>
                   </View>
                   <View style={{ flexDirection: "row" }}>
                     <Feather
-                      onPress={handleClickChangeFollow}
+                      onPress={() => handleLike(item.id)}
                       name="thumbs-up"
                       size={24}
-                      color={isFollowing ? "#FF6C00" : "#BDBDBD"}
+                      color={
+                        Object.keys(item.likes).length  > 0
+                          ? "#FF6C00"
+                          : "#BDBDBD"
+                      }
                     />
                     <Text
                       style={{
@@ -107,7 +142,7 @@ const DefaultScreenPosts = ({ navigation }) => {
                         marginLeft: 8,
                       }}
                     >
-                      {likes}
+                      {item.likes ? Object.keys(item.likes).length : 0}
                     </Text>
                   </View>
                 </View>
