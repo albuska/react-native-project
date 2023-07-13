@@ -16,7 +16,14 @@
       "**/*"
     ],
     "packagerOpts": {
-      "sourceExts": [ "js", "json", "ts", "tsx", "jsx", "vue"]
+      "sourceExts": [
+        "js",
+        "json",
+        "ts",
+        "tsx",
+        "jsx",
+        "vue"
+      ]
     },
     "ios": {
       "supportsTablet": true,
@@ -27,9 +34,12 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      
       },
-      "jsEngine": "jsc"
+      "jsEngine": "jsc",
+      "permissions": [
+        "android.permission.RECORD_AUDIO"
+      ],
+      "package": "com.albinaanistratenko.newProject"
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -41,6 +51,11 @@
           "photosPermission": "The app accesses your photos to let you share them with your friends."
         }
       ]
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "cc86cdd5-0532-4686-a8ec-498acba9c24d"
+      }
+    }
   }
 }
