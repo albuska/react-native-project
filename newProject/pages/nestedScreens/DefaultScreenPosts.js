@@ -83,7 +83,7 @@ const DefaultScreenPosts = ({ navigation }) => {
     }
   };
 
-  console.log("posts ---->", posts);
+  // console.log("posts ---->", posts);
 
   return (
     <View style={styles.container}>
@@ -130,7 +130,7 @@ const DefaultScreenPosts = ({ navigation }) => {
                       name="thumbs-up"
                       size={24}
                       color={
-                        Object.keys(item.likes).length  > 0
+                        item.likes && Object.keys(item.likes).length
                           ? "#FF6C00"
                           : "#BDBDBD"
                       }

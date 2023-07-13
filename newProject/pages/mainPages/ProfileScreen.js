@@ -7,7 +7,7 @@ import {
   ImageBackground,
   Image,
 } from "react-native";
-import { Feather } from "@expo/vector-icons";
+import { Feather, createIconSet } from "@expo/vector-icons";
 import { selectUser } from "../../redux/auth/selectors";
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
@@ -56,34 +56,50 @@ const ProfileScreen = () => {
     };
   }, []);
 
-  const handleLike = (postId) => {
-    const currentUser = db.auth().currentUser;
+  // const handleLike = (postId) => {
+  //   const currentUser = db.auth().currentUser;
 
-    const post = posts.find((item) => item.id === postId);
-    const hasLiked = post.likes && post.likes[currentUser.uid];
+  //   const post = posts.find((item) => item.id === postId);
+  //   const hasLiked = post.likes && post.likes[currentUser.uid];
 
-    if (hasLiked) {
-      db.firestore()
-        .collection("posts")
-        .doc(postId)
-        .update({
-          [`likes.${currentUser.uid}`]: db.firestore.FieldValue.delete(),
-        })
-        .catch((error) => {
-          console.error("Помилка при забиранні лайка:", error);
-        });
-    } else {
-      db.firestore()
-        .collection("posts")
-        .doc(postId)
-        .update({
-          [`likes.${currentUser.uid}`]: true,
-        })
-        .catch((error) => {
-          console.error("Помилка при додаванні лайка:", error);
-        });
-    }
-  };
+  //   if (hasLiked) {
+  //     db.firestore()
+  //       .collection("posts")
+  //       .doc(postId)
+  //       .update({
+  //         [`likes.${currentUser.uid}`]: db.firestore.FieldValue.delete(),
+  //       })
+  //       .catch((error) => {
+  //         console.error("Помилка при забиранні лайка:", error);
+  //       });
+  //   } else {
+  //     db.firestore()
+  //       .collection("posts")
+  //       .doc(postId)
+  //       .update({
+  //         [`likes.${currentUser.uid}`]: true,
+  //       })
+  //       .catch((error) => {
+  //         console.error("Помилка при додаванні лайка:", error);
+  //       });
+  //   }
+  // };
+
+  // const getAllPost = async () => {
+  //   await db
+  //     .firestore()
+  //     .collection("posts")
+  //     .where("userId", "==", userId)
+  //     .onSnapshot((data) =>
+  //       setPosts(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })))
+  //     );
+  // };
+
+  // useEffect(() => {
+  //   getAllPost();
+  // }, []);
+
+  console.log("Profile", posts);
 
   return (
     <ImageBackground
@@ -98,7 +114,7 @@ const ProfileScreen = () => {
         </View>
         <SafeAreaView>
           <FlatList
-            data={setPosts}
+            data={posts}
             keyExtractor={(item) => item.id}
             renderItem={({ item }) => (
               <View style={styles.card}>
@@ -116,7 +132,9 @@ const ProfileScreen = () => {
                       <Feather
                         name="message-circle"
                         size={24}
-                        color="#BDBDBD"
+                        color={
+                          item.comments.length >= 0 ? "#FF6C00" : "#BDBDBD"
+                        }
                         style={{ transform: [{ rotate: "-90deg" }] }}
                       />
                       <Text
@@ -126,7 +144,7 @@ const ProfileScreen = () => {
                           marginLeft: 8,
                         }}
                       >
-                        {/* {allComments ? allComments.length : 0} */}0
+                        {item.comments.length >= 0 ? item.comments.length : 0}
                       </Text>
                     </View>
                     <View style={{ flexDirection: "row" }}>
@@ -135,7 +153,7 @@ const ProfileScreen = () => {
                         name="thumbs-up"
                         size={24}
                         color={
-                          Object.keys(item.likes).length > 0
+                          item.likes && Object.keys(item.likes).length
                             ? "#FF6C00"
                             : "#BDBDBD"
                         }
@@ -152,12 +170,7 @@ const ProfileScreen = () => {
                     </View>
                   </View>
                   <View style={{ flexDirection: "row" }}>
-                    <Feather
-                      name="map-pin"
-                      size={24}
-                      color="#BDBDBD"
-                      onPress={() => navigation.navigate("Map", { item })}
-                    />
+                    <Feather name="map-pin" size={24} color="#BDBDBD" />
                     <Text
                       style={{
                         textDecorationLine: "underline",
