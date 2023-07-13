@@ -13,21 +13,24 @@ import {
 } from "react-native";
 import { useState } from "react";
 import { login } from "../redux/auth/operations";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 
 const LoginScreen = ({ navigation }) => {
   const [hidePass, setHidePass] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isShowKeyboard, setIsShowKeyboard] = useState(false);
   const [focusedInput, setFocusedInput] = useState(null);
 
   const dispatch = useDispatch();
 
   const handleInputFocus = (input) => {
+    setIsShowKeyboard(true);
     setFocusedInput(input);
   };
 
   const handleInputBlur = () => {
+    setIsShowKeyboard(false);
     setFocusedInput(null);
   };
 
@@ -56,6 +59,8 @@ const LoginScreen = ({ navigation }) => {
                 behavior={Platform.OS == "ios" ? "padding" : "height"}
               >
                 <TextInput
+                  onFocus={() => handleInputFocus("email")}
+                  onBlur={handleInputBlur}
                   style={[
                     styles.input,
                     focusedInput === "email" && styles.focusedFormInput,
@@ -64,8 +69,6 @@ const LoginScreen = ({ navigation }) => {
                   autoComplete="email"
                   value={email}
                   onChangeText={setEmail}
-                  onFocus={() => handleInputFocus("email")}
-                  onBlur={handleInputBlur}
                 />
               </KeyboardAvoidingView>
               <View>
@@ -73,17 +76,17 @@ const LoginScreen = ({ navigation }) => {
                   behavior={Platform.OS == "ios" ? "padding" : "height"}
                 >
                   <TextInput
+                    onFocus={() => handleInputFocus("password")}
+                    onBlur={handleInputBlur}
                     style={[
                       styles.input,
-                      focusedInput === "email" && styles.focusedFormInput,
+                      focusedInput === "password" && styles.focusedFormInput,
                     ]}
                     placeholder="Пароль"
                     autoComplete="password"
                     secureTextEntry={hidePass ? true : false}
                     value={password}
                     onChangeText={setPassword}
-                    onFocus={() => handleInputFocus("password")}
-                    onBlur={handleInputBlur}
                   />
                 </KeyboardAvoidingView>
                 <Text

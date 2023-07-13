@@ -72,7 +72,7 @@ const ProfileScreen = () => {
     >
       <View style={styles.container}>
         <TouchableOpacity
-          style={{ position: "absolute", top: 22, right: 16 }}
+          style={{ position: "absolute", top: 22, right: 16, zIndex: 2 }}
           onPress={() => dispatch(logout())}
         >
           <Feather name="log-out" size={24} color="#BDBDBD" />

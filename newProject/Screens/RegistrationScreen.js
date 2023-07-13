@@ -24,8 +24,6 @@ const RegistrationScreen = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [image, setImage] = useState(null);
-  const [isFocused, setIsFocused] = useState(false);
-  const [borderColor, setBorderColor] = useState("#E8E8E8");
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
   const [isLogin, setIsLogin] = useState(false);
   const [focusedInput, setFocusedInput] = useState(null);
