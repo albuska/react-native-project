@@ -83,7 +83,7 @@ const DefaultScreenPosts = ({ navigation }) => {
     }
   };
 
-  // console.log("posts ---->", posts);
+  console.log("posts ---->", posts);
 
   return (
     <View style={styles.container}>
@@ -114,7 +114,7 @@ const DefaultScreenPosts = ({ navigation }) => {
                     <Feather
                       name="message-circle"
                       size={24}
-                      color={item.comments.length >= 0 ? "#FF6C00" : "#BDBDBD"}
+                      color={item.comments.length === 0 ? "#BDBDBD" : "#FF6C00"}
                       style={{ transform: [{ rotate: "-90deg" }] }}
                       onPress={() => navigation.navigate("Comments", { item })}
                     />

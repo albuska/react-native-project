@@ -34,17 +34,13 @@ const CommentsScreen = ({ route }) => {
 
   const { login, avatar } = useSelector(selectUser);
 
-  useEffect(() => {
-    getAllComments();
-  }, []);
-
   const createPost = async () => {
     await db
       .firestore()
       .collection("posts")
       .doc(postId)
       .collection("comments")
-      .add({ comment, login, date });
+      .add({ comment, login, date, avatar });
 
     setComment("");
   };
@@ -59,6 +55,12 @@ const CommentsScreen = ({ route }) => {
         setAllComments(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })))
       );
   };
+
+  useEffect(() => {
+    getAllComments();
+  }, []);
+
+  console.log("allComments =====>", allComments);
 
   useEffect(() => {
     try {
@@ -88,7 +90,7 @@ const CommentsScreen = ({ route }) => {
               data={allComments}
               renderItem={({ item }) => (
                 <View style={{ flexDirection: "row", gap: 16, marginTop: 16 }}>
-                  <Image source={{ uri: avatar }} style={styles.loadPhoto} />
+                  <Image source={{ uri: item.avatar }} style={styles.loadPhoto} />
                   <View style={styles.commentBox}>
                     <Text
                       style={styles.commentText}
