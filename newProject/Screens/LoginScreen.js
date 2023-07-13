@@ -15,16 +15,24 @@ import { useState } from "react";
 import { login } from "../redux/auth/operations";
 import { useDispatch, useSelector } from "react-redux";
 
-const LoginScreen = ({navigation}) => {
+const LoginScreen = ({ navigation }) => {
   const [hidePass, setHidePass] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  // const [isLogin, setIsLogin] = useState(false);
-  
-  const dispatch = useDispatch(); 
+  const [focusedInput, setFocusedInput] = useState(null);
+
+  const dispatch = useDispatch();
+
+  const handleInputFocus = (input) => {
+    setFocusedInput(input);
+  };
+
+  const handleInputBlur = () => {
+    setFocusedInput(null);
+  };
 
   const onLogin = () => {
-  dispatch(login({ email, password }));
+    dispatch(login({ email, password }));
     // setIsLogin(true);
 
     Alert.alert("You are welcome!");
@@ -48,12 +56,16 @@ const LoginScreen = ({navigation}) => {
                 behavior={Platform.OS == "ios" ? "padding" : "height"}
               >
                 <TextInput
-                  style={styles.input}
-                  // name="email"
+                  style={[
+                    styles.input,
+                    focusedInput === "email" && styles.focusedFormInput,
+                  ]}
                   placeholder="Адреса електронної пошти"
                   autoComplete="email"
                   value={email}
                   onChangeText={setEmail}
+                  onFocus={() => handleInputFocus("email")}
+                  onBlur={handleInputBlur}
                 />
               </KeyboardAvoidingView>
               <View>
@@ -61,13 +73,17 @@ const LoginScreen = ({navigation}) => {
                   behavior={Platform.OS == "ios" ? "padding" : "height"}
                 >
                   <TextInput
-                    style={styles.input}
-                    // name="password"
+                    style={[
+                      styles.input,
+                      focusedInput === "email" && styles.focusedFormInput,
+                    ]}
                     placeholder="Пароль"
                     autoComplete="password"
                     secureTextEntry={hidePass ? true : false}
                     value={password}
                     onChangeText={setPassword}
+                    onFocus={() => handleInputFocus("password")}
+                    onBlur={handleInputBlur}
                   />
                 </KeyboardAvoidingView>
                 <Text
@@ -143,6 +159,13 @@ const styles = StyleSheet.create({
     paddingBottom: 15,
     paddingLeft: 16,
     marginBottom: 16,
+  },
+  focusedFormInput: {
+    borderWidth: 1,
+    borderStyle: "solid",
+    borderRadius: 8,
+    borderColor: "#FF6C00",
+    backgroundColor: "#FFFFFF",
   },
   text: {
     textAlign: "center",

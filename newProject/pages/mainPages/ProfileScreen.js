@@ -6,17 +6,23 @@ import {
   FlatList,
   ImageBackground,
   Image,
+  TouchableOpacity,
 } from "react-native";
-import { Feather, createIconSet } from "@expo/vector-icons";
+import { Feather } from "@expo/vector-icons";
 import { selectUser } from "../../redux/auth/selectors";
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import db from "../../firebase/config";
+import Icon from "react-native-vector-icons/FontAwesome";
+import { useDispatch } from "react-redux";
+import { logout } from "../../redux/auth/operations";
 
 const ProfileScreen = () => {
   const { userId, avatar, login } = useSelector(selectUser);
 
   const [posts, setPosts] = useState([]);
+
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const unsubscribe = db
@@ -56,49 +62,6 @@ const ProfileScreen = () => {
     };
   }, []);
 
-  // const handleLike = (postId) => {
-  //   const currentUser = db.auth().currentUser;
-
-  //   const post = posts.find((item) => item.id === postId);
-  //   const hasLiked = post.likes && post.likes[currentUser.uid];
-
-  //   if (hasLiked) {
-  //     db.firestore()
-  //       .collection("posts")
-  //       .doc(postId)
-  //       .update({
-  //         [`likes.${currentUser.uid}`]: db.firestore.FieldValue.delete(),
-  //       })
-  //       .catch((error) => {
-  //         console.error("Помилка при забиранні лайка:", error);
-  //       });
-  //   } else {
-  //     db.firestore()
-  //       .collection("posts")
-  //       .doc(postId)
-  //       .update({
-  //         [`likes.${currentUser.uid}`]: true,
-  //       })
-  //       .catch((error) => {
-  //         console.error("Помилка при додаванні лайка:", error);
-  //       });
-  //   }
-  // };
-
-  // const getAllPost = async () => {
-  //   await db
-  //     .firestore()
-  //     .collection("posts")
-  //     .where("userId", "==", userId)
-  //     .onSnapshot((data) =>
-  //       setPosts(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })))
-  //     );
-  // };
-
-  // useEffect(() => {
-  //   getAllPost();
-  // }, []);
-
   console.log("Profile", posts);
 
   return (
@@ -108,6 +71,12 @@ const ProfileScreen = () => {
       style={styles.imageBg}
     >
       <View style={styles.container}>
+        <TouchableOpacity
+          style={{ position: "absolute", top: 22, right: 16 }}
+          onPress={() => dispatch(logout())}
+        >
+          <Feather name="log-out" size={24} color="#BDBDBD" />
+        </TouchableOpacity>
         <View style={{ alignItems: "center" }}>
           <Image source={{ uri: avatar }} style={styles.loadPhoto} />
           <Text style={styles.login}>{login}</Text>
@@ -129,14 +98,17 @@ const ProfileScreen = () => {
                 >
                   <View style={{ flexDirection: "row", gap: 24 }}>
                     <View style={{ flexDirection: "row" }}>
-                      <Feather
-                        name="message-circle"
-                        size={24}
+                      <Icon
+                        name="comment"
                         color={
                           item.comments.length >= 0 ? "#FF6C00" : "#BDBDBD"
                         }
-                        style={{ transform: [{ rotate: "-90deg" }] }}
+                        style={{
+                          transform: [{ rotateY: "180deg" }],
+                        }}
+                        size={24}
                       />
+
                       <Text
                         style={{
                           color: "#BDBDBD",
@@ -149,7 +121,6 @@ const ProfileScreen = () => {
                     </View>
                     <View style={{ flexDirection: "row" }}>
                       <Feather
-                        onPress={() => handleLike(item.id)}
                         name="thumbs-up"
                         size={24}
                         color={
@@ -204,7 +175,6 @@ const styles = StyleSheet.create({
     marginTop: 200,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
-    // alignItems: "center",
     backgroundColor: "#FFFFFF",
     paddingBottom: 140,
   },

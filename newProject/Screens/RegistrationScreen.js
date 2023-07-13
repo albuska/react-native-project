@@ -28,33 +28,18 @@ const RegistrationScreen = ({ navigation }) => {
   const [borderColor, setBorderColor] = useState("#E8E8E8");
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
   const [isLogin, setIsLogin] = useState(false);
+  const [focusedInput, setFocusedInput] = useState(null);
 
   const dispatch = useDispatch();
 
-  const handleFocus = () => {
-    // switch (value) {
-    //   case "login":
-    //     setIsFocused(true);
-    //     console.debug("1");
-    //     return;
-    // }
-    //     switch (value) {
-    //       case "email":
-    //         setIsFocused(true);
-    //         console.debug("2");
-    //         return;
-    //     }
-    //     switch (value) {
-    //       case "password":
-    //         setIsFocused(true);
-    //         console.debug("3");
-    //         return;
-    //     }
-    setBorderColor("#FF6C00");
+  const handleInputFocus = (input) => {
+    setIsShowKeyboard(true);
+    setFocusedInput(input);
   };
 
-  const handleBlur = () => {
-    setBorderColor("#E8E8E8");
+  const handleInputBlur = () => {
+    setIsShowKeyboard(false);
+    setFocusedInput(null);
   };
 
   const addImage = async () => {
@@ -119,21 +104,24 @@ const RegistrationScreen = ({ navigation }) => {
             </ImageBackground>
             <Text style={styles.title}>Реєстрація</Text>
             <TextInput
-              onFocus={() => setIsShowKeyboard(true)}
-              onBlur={() => handleBlur}
-              style={{ ...styles.input, borderColor }}
+              onFocus={() => handleInputFocus("login")}
+              onBlur={handleInputBlur}
+              style={[
+                styles.input,
+                focusedInput === "login" && styles.focusedFormInput,
+              ]}
               placeholder="Логін"
               value={login}
               onChangeText={setLogin}
               required
             />
             <TextInput
-              onFocus={() => setIsShowKeyboard(true)}
-              onBlur={() => handleBlur}
-              style={{
-                ...styles.input,
-                borderColor,
-              }}
+              onFocus={() => handleInputFocus("email")}
+              onBlur={handleInputBlur}
+              style={[
+                styles.input,
+                focusedInput === "email" && styles.focusedFormInput,
+              ]}
               placeholder="Адреса електронної пошти"
               autoComplete="email"
               value={email}
@@ -142,12 +130,12 @@ const RegistrationScreen = ({ navigation }) => {
             />
             <View>
               <TextInput
-                onFocus={() => setIsShowKeyboard(true)}
-                onBlur={() => handleBlur}
-                style={{
-                  ...styles.input,
-                  borderColor,
-                }}
+                onFocus={() => handleInputFocus("password")}
+                onBlur={handleInputBlur}
+                style={[
+                  styles.input,
+                  focusedInput === "password" && styles.focusedFormInput,
+                ]}
                 placeholder="Пароль"
                 autoComplete="password"
                 secureTextEntry={hidePass ? true : false}
@@ -207,19 +195,19 @@ const styles = StyleSheet.create({
   },
   input: {
     backgroundColor: "#F6F6F6",
-    borderWidth: 1,
     borderRadius: 8,
     paddingTop: 16,
     paddingBottom: 15,
     paddingHorizontal: 16,
     marginBottom: 16,
   },
-  // textInputFocus: {
-  //   borderColor: "#FF6C00",
-  // },
-  // textInput: {
-  //   borderColor: "#E8E8E8",
-  // },
+  focusedFormInput: {
+    borderWidth: 1,
+    borderStyle: "solid",
+    borderRadius: 8,
+    borderColor: "#FF6C00",
+    backgroundColor: "#FFFFFF",
+  },
   text: {
     textAlign: "center",
     marginTop: 16,
