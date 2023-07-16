@@ -56,6 +56,8 @@ const CommentsScreen = ({ route }) => {
       );
   };
 
+  console.log("route.params.item ====>>>>", route.params.item);
+
   useEffect(() => {
     getAllComments();
     // setAllComments(route.params.item.comments);

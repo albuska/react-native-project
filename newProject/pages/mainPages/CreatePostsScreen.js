@@ -124,6 +124,7 @@ const CreatePostsScreen = ({ navigation }) => {
 
   const uploadPostToServer = async () => {
     const photo = await uploadPhotoToServer();
+    const avatar = await uploadAvatarToServer();
 
     await db
       .firestore()
@@ -149,6 +150,23 @@ const CreatePostsScreen = ({ navigation }) => {
     return processedPhoto;
   };
 
+  const uploadAvatarToServer = async () => {
+    const response = await fetch(avatar);
+
+    const file = await response.blob();
+
+    const uniquePostId = Date.now().toString();
+
+    await db.storage().ref(`postImage/${uniquePostId}`).put(file);
+
+    const processedPhoto = await db
+      .storage()
+      .ref("postImage")
+      .child(uniquePostId)
+      .getDownloadURL();
+
+    return processedPhoto;
+  };
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.container}>
