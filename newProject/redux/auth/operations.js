@@ -6,7 +6,6 @@ export const register =
   async (dispatch, getState) => {
     try {
       await db.auth().createUserWithEmailAndPassword(email, password);
-console.log("image", image)
       const user = await db.auth().currentUser;
 
       await user.updateProfile({
@@ -34,7 +33,7 @@ export const login =
   ({ email, password }) =>
   async (dispatch, getState) => {
     try {
-      const user = await db.auth().signInWithEmailAndPassword(email, password);
+       await db.auth().signInWithEmailAndPassword(email, password);
     } catch (error) {
       console.log(error);
       console.log(error.code);

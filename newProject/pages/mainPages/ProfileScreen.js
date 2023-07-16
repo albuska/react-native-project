@@ -37,6 +37,8 @@ const ProfileScreen = () => {
           post.comments = [];
           updatedPosts.push(post);
 
+          console.log("post ===>", post)
+
           const commentsSnapshot = doc.ref
             .collection("comments")
             .onSnapshot((comments) => {

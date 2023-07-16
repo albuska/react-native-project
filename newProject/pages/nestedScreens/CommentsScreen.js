@@ -61,10 +61,6 @@ const CommentsScreen = ({ route }) => {
     // setAllComments(route.params.item.comments);
   }, []);
 
-  console.log("allComments ====>", allComments);
-
-  console.log("avatar =====>", avatar);
-
   useEffect(() => {
     try {
       if (route.params) {

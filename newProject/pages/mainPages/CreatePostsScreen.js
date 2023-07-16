@@ -29,7 +29,7 @@ const CreatePostsScreen = ({ navigation }) => {
   const [image, setImage] = useState(null);
   const [geolocation, setGeoLocation] = useState(null);
 
-  const { userId, login } = useSelector(selectUser);
+  const { userId, login, avatar } = useSelector(selectUser);
 
   useEffect(() => {
     (async () => {
@@ -128,7 +128,7 @@ const CreatePostsScreen = ({ navigation }) => {
     await db
       .firestore()
       .collection("posts")
-      .add({ photo, name, location, geolocation, userId, login });
+      .add({ photo, name, location, geolocation, userId, login, avatar });
   };
 
   const uploadPhotoToServer = async () => {

@@ -25,9 +25,8 @@ const DefaultScreenPosts = ({ navigation }) => {
         const updatedPosts = [];
         snapshot.forEach((doc) => {
           const post = doc.data();
-          console.log("post  =====>>>", post);
+          console.log("post ---->", post);
           post.id = doc.id;
-          post.avatar = avatar; 
           post.comments = [];
           updatedPosts.push(post);
 
@@ -58,6 +57,8 @@ const DefaultScreenPosts = ({ navigation }) => {
 
   const handleLike = (postId) => {
     const currentUser = db.auth().currentUser;
+
+    console.log("currentUser =====>>>>", currentUser);
 
     const post = posts.find((item) => item.id === postId);
     const hasLiked = post.likes && post.likes[currentUser.uid];
