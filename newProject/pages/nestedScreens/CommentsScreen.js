@@ -19,8 +19,6 @@ import { selectUser } from "../../redux/auth/selectors";
 const CommentsScreen = ({ route }) => {
   const postId = route.params.item.id;
 
-  console.log("route.params.item ======>", route.params.item);
-
   const [picture, setPicture] = useState(null);
   const [comment, setComment] = useState("");
   const [allComments, setAllComments] = useState([]);

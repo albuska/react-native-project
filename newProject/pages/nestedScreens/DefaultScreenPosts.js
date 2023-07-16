@@ -31,8 +31,6 @@ const DefaultScreenPosts = ({ navigation }) => {
           post.comments = [];
           updatedPosts.push(post);
 
-          console.log("updatedPosts ===>>>", updatedPosts);
-
           const commentsSnapshot = doc.ref
             .collection("comments")
             .onSnapshot((comments) => {
@@ -86,9 +84,6 @@ const DefaultScreenPosts = ({ navigation }) => {
         });
     }
   };
-
-  console.log("posts ---->", posts);
-  console.log(avatar);
 
   return (
     <View style={styles.container}>
