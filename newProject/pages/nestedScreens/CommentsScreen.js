@@ -19,6 +19,8 @@ import { selectUser } from "../../redux/auth/selectors";
 const CommentsScreen = ({ route }) => {
   const postId = route.params.item.id;
 
+  console.log("route.params.item ======>", route.params.item);
+
   const [picture, setPicture] = useState(null);
   const [comment, setComment] = useState("");
   const [allComments, setAllComments] = useState([]);
@@ -58,9 +60,12 @@ const CommentsScreen = ({ route }) => {
 
   useEffect(() => {
     getAllComments();
+    // setAllComments(route.params.item.comments);
   }, []);
 
-  console.log("allComments =====>", allComments);
+  console.log("allComments ====>", allComments);
+
+  console.log("avatar =====>", avatar);
 
   useEffect(() => {
     try {
@@ -89,11 +94,25 @@ const CommentsScreen = ({ route }) => {
             <FlatList
               data={allComments}
               renderItem={({ item }) => (
-                <View style={{ flexDirection: "row", gap: 16, marginTop: 16 }}>
-                  <Image source={{ uri: item.avatar }} style={styles.loadPhoto} />
+                <View
+                  style={
+                    login === item.login
+                      ? { flexDirection: "row", gap: 16, marginTop: 16 }
+                      : { flexDirection: "row-reverse", gap: 16, marginTop: 16 }
+                  }
+                >
+                  <Image
+                    source={{
+                      uri: item.avatar,
+                    }}
+                    style={styles.loadPhoto}
+                  />
                   <View style={styles.commentBox}>
                     <Text
-                      style={styles.commentText}
+                      style={[
+                        styles.commentText,
+                        { paddingLeft: login === item.login ? 16 : 60 },
+                      ]}
                       onPress={() => setIsShowKeyboard(true)}
                     >
                       {item.comment}
@@ -102,7 +121,7 @@ const CommentsScreen = ({ route }) => {
                       style={{
                         fontSize: 10,
                         color: "#BDBDBD",
-                        marginLeft: "auto",
+                        marginLeft: login === item.login ? "auto" : 60,
                         marginRight: 60,
                         paddingBottom: 20,
                       }}
@@ -186,8 +205,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   commentText: {
-    width: "100%",
-    // height: 30,
+    // width: "100%",
     color: "#212121",
     fontSize: 13,
     paddingVertical: 10,

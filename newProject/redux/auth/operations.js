@@ -6,17 +6,13 @@ export const register =
   async (dispatch, getState) => {
     try {
       await db.auth().createUserWithEmailAndPassword(email, password);
-
-      console.log("email -->>>", email);
-
+console.log("image", image)
       const user = await db.auth().currentUser;
 
       await user.updateProfile({
         displayName: login.trim(),
         photoURL: image,
       });
-
-      console.log("user---->", user);
 
       const { photoURL, uid, displayName } = await db.auth().currentUser;
 

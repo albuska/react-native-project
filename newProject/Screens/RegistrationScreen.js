@@ -60,11 +60,6 @@ const RegistrationScreen = ({ navigation }) => {
   const signIn = () => {
     dispatch(register({ image, login, email, password }));
     setIsLogin(true);
-
-    // setImage(null);
-    // setLogin("");
-    // setEmail("");
-    // setPassword("");
   };
 
   return (

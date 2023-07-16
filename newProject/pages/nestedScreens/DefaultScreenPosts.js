@@ -25,9 +25,13 @@ const DefaultScreenPosts = ({ navigation }) => {
         const updatedPosts = [];
         snapshot.forEach((doc) => {
           const post = doc.data();
+          console.log("post  =====>>>", post);
           post.id = doc.id;
+          post.avatar = avatar; 
           post.comments = [];
           updatedPosts.push(post);
+
+          console.log("updatedPosts ===>>>", updatedPosts);
 
           const commentsSnapshot = doc.ref
             .collection("comments")
@@ -84,6 +88,7 @@ const DefaultScreenPosts = ({ navigation }) => {
   };
 
   console.log("posts ---->", posts);
+  console.log(avatar);
 
   return (
     <View style={styles.container}>

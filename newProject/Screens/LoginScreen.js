@@ -13,7 +13,8 @@ import {
 } from "react-native";
 import { useState } from "react";
 import { login } from "../redux/auth/operations";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { selectUser } from "../redux/auth/selectors";
 
 const LoginScreen = ({ navigation }) => {
   const [hidePass, setHidePass] = useState(true);
@@ -21,6 +22,8 @@ const LoginScreen = ({ navigation }) => {
   const [password, setPassword] = useState("");
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
   const [focusedInput, setFocusedInput] = useState(null);
+
+  const user = useSelector(selectUser);
 
   const dispatch = useDispatch();
 
@@ -35,9 +38,11 @@ const LoginScreen = ({ navigation }) => {
   };
 
   const onLogin = () => {
+    if (user.email !== email || user.password !== password)
+      Alert.alert("Password or email entered incorrectly!");
+
     dispatch(login({ email, password }));
     // setIsLogin(true);
-
     Alert.alert("You are welcome!");
 
     setEmail("");
