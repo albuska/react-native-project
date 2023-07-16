@@ -2,7 +2,7 @@
 
 ## Mobile application as network. 
 
-[Link to deploy](https://expo.dev/accounts/albinaanistratenko/projects/newProject/builds/9b0222b9-eb73-4782-991c-a0030cf5027a).
+[Link to deploy](https://expo.dev/accounts/albinaanistratenko/projects/newProject/builds/0d9f0119-03be-456b-81d7-e611094ca353).
 
 ### QR-code
 ![QR](./newProject/image.PNG)
